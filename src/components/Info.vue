@@ -23,9 +23,9 @@ import { openURL } from "quasar";
 export default {
   name: "Info",
   methods: {
-    github() {
-      openURL("https://github.com/neuronetio/gantt-elastic");
-    },
+    // github() {
+    //   openURL("https://github.com/neuronetio/gantt-elastic");
+    // },
     star() {
       openURL("https://github.com/neuronetio/gantt-elastic/stargazers");
     },
