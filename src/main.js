@@ -1,10 +1,12 @@
 import Vue from 'vue';
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 import App from './App.vue';
 import Gantt from './components/Gantt.vue';
 import Info from './components/Info.vue';
-
 import Router from 'vue-router';
 Vue.use(Router);
+Vue.use(VueAxios, axios);
 
 const router = new Router({
   routes: [

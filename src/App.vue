@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Gantt Elastic demo
+          爱学习在线测试项目排期表 
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

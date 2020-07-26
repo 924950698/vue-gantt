@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.1.2",
+    "axios": "^0.19.2",
     "dayjs": "^1.8.14",
     "gantt-elastic": "^1.0.0",
     "gantt-elastic-header": "^0.1.11",
     "quasar": "^1.0.0-beta.23",
     "vue": "^2.6.10",
+    "vue-axios": "^2.1.5",
     "vue-router": "^3.0.6"
   },
   "devDependencies": {
