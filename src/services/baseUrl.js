@@ -1,4 +1,4 @@
-const baseUrl = 'http://192.168.0.104:8081/';
+const baseUrl = 'http://127.0.0.1:8081/';
 
 const queryGanttList = baseUrl + "allProjects";
 

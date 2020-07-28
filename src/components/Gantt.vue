@@ -41,6 +41,105 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
+let data = [{
+    "id": "47381",
+    "key": "TOL-124",//需求id
+    "fields": {
+        "priority": {
+            "name": "致命",//优先级
+            "id": "1"
+        },
+        "customfield_11820": "0%",//整体开发进度
+        "status": {
+            "name": "技术方案评审通过",//状态
+        },
+        "components": [
+            {
+                "name": "学习产品"//需求类型
+            }
+        ],
+        "customfield_10211": "2020-08-28T21:41:00.000+0800",//实际上线时间
+        "customfield_11300": "2020-08-14",//计划提测时间
+        "customfield_11812": "2020-07-30",//启动开发时间
+        "customfield_11811": [
+            {
+                "displayName": "刘孟青",//rd-pc客户端
+            }
+        ],
+        "customfield_11814": "2020-08-17",//测试完成时间
+        "customfield_11813": "2020-08-16",//开始测试时间
+        "customfield_11818": "20%",//整体项目进度
+        "customfield_11819": "0%",//整体测试进度
+        "reporter": {
+            "displayName": "戴永健",//产品
+        },
+        "project": {
+            "name": "创新业务产研团队",//业务线名称
+        },
+        "customfield_11633": "14",//测试工时
+        "customfield_11632": "15",//后端开发工时
+        "customfield_11631": "60",//前端开发工时
+        "customfield_11622": {
+            "displayName": "黄中博",//UI
+        },
+        "customfield_11625": [
+            {
+                "displayName": "高立康",//后端1
+            },
+            {
+                "displayName": "张鹏飞1",//后端2
+            }
+        ],
+        "customfield_11107": "2020-08-31",//计划上线时间
+        "customfield_11624": [
+            {
+                "displayName": "田惠颖",//rd-前端
+            }
+        ],
+        
+        "customfield_11627": [
+            {
+                "displayName": "安雪",//qa1
+            },
+            {
+                "displayName": "邢宁",//qa2
+            }
+        ],
+        "customfield_11626": [
+            {
+                "displayName": "梁海淼",//android开发1
+            },
+            {
+                "displayName": "刘喆0",//android开发2
+            }
+        ],
+        "customfield_11628": [
+            {
+                "displayName": "郭玉涛",//iOS开发1
+            },
+            {
+                "displayName": "李凯0",//iOS开发2
+             
+            }
+        ],
+        "customfield_11621": "https://www.figma.com/file/a52UaUq9ELdx09wvboC1IA/%E4%B8%8A%E5%8F%B0%E5%8F%91%E8%A8%80?node-id=0%3A1",//ui地址
+        "customfield_11613": {
+            "value": "产品需求",
+        },
+        "customfield_11616": "2020-07-27",//技术评审时间
+        "customfield_11615": "2020-07-21",//需求评审时间
+        "customfield_11617": "2020-08-15T21:41:00.000+0800",//实际提测时间
+        "summary": "小组课-上台发言",//需求名称
+        "customfield_11604": "http://iwork.gaosiedu.com/pages/viewpage.action?pageId=69861524",//需求文档地址
+        "comment": {
+            "comments": [
+                {
+                    "body": "备注",
+                }
+            ],
+        }
+    }
+}];
 
 let tasks = [];
 let options = {
