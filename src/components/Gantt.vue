@@ -21,9 +21,9 @@
 import GanttElastic from "gantt-elastic";
 import GanttHeader from "gantt-elastic-header";
 import dayjs from "dayjs";
-import services from "../services/jiraUrl.js";
+import jiraUrl from "../services/jiraUrl.js";
 import { getStartDate } from "../utils/utils.js";
-
+import qs from 'qs';
 
 // just helper to get current dates  获取当前时间
 function getDate(hours) {
@@ -41,7 +41,7 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
-let data = [{
+let resData = [{
     "id": "47381",
     "key": "TOL-124",//需求id
     "fields": {
@@ -284,6 +284,8 @@ export default {
     return {
       tasks,
       options,
+      token,
+      resData,
       dynamicStyle: {},
       lastId: 16,
     };
@@ -295,11 +297,15 @@ export default {
   },
   methods: {
     jiraLogin(){
-        this.axios.post(services.jiraLogin,{username:'tianhuiying',password:'Thuiy123'}).then((res)=>{
+        const params = {username:'tianhuiying',password:'Thuiy123'};
+        this.axios.post(jiraUrl.info, qs.parse(params), { 
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((res)=>{
           if(res && res.data){
-            
-            this.token=res.data.session.value;
-            console.log("token",this.token);
+            this.token = res.data.session.value;
+            // console.log("token", this.token);
           }
         });
     },
@@ -307,7 +313,7 @@ export default {
 
     },
     queyGanttList() {
-      this.axios.get(services.queryGanttList).then((res) => {
+      this.axios.get(jiraUrl.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
           data.map((item) => {
@@ -348,7 +354,7 @@ export default {
     tasksUpdate(tasks) {
         this.tasks = tasks;
     },
-    optionsUpdate(options) {
+    optionsUpdate() {
         // this.options = options;
     },
     styleUpdate(style) {
