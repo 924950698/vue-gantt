@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          爱学习在线测试项目排期表 
+          质量效率部项目管理 
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -27,7 +27,7 @@
             <q-item-label>Demo</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable @click="$router.push('/info')">
+        <q-item clickable @click="$router.push('/board')">
           <q-item-section avatar>
             <q-icon name="mdi-file-document-box-multiple" />
           </q-item-section>

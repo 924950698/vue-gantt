@@ -41,6 +41,12 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
+
+
+let token = "14D4D45BC6C1AA6FC9FBFD91F7EA4CBB";
+let credentials = btoa(services.username + ':' + token);
+let basicAuth = 'Basic ' + credentials;
+
 let data = [{
     "id": "47381",
     "key": "TOL-124",//需求id
@@ -140,7 +146,7 @@ let data = [{
         }
     }
 }];
-let token;
+
 let tasks = [];
 let options = {
   taskMapping: {
@@ -282,6 +288,9 @@ export default {
   },
   data() {
     return {
+      token,
+      credentials,
+      basicAuth,
       tasks,
       options,
       dynamicStyle: {},
@@ -290,12 +299,13 @@ export default {
   },
   mounted() {
     // this.queyGanttList();
-    this.jiraLogin();
-    // this.getProjects();
+    // this.jiraLogin();
+    this.getProjects();
   },
   methods: {
     jiraLogin(){
-        this.axios.post(services.jiraLogin,{username:'tianhuiying',password:'Thuiy123'}).then((res)=>{
+        this.axios.post(services.jiraLogin,{username:services.username,password:services.password})
+        .then((res)=>{
           if(res && res.data){
             
             this.token=res.data.session.value;
@@ -304,7 +314,15 @@ export default {
         });
     },
     getProjects(){
+      
+        this.axios.get(services.getProjects,
+             {
+                params: {jql: services.jql},
+                headers: { 'Authorization':  this.basicAuth }
+              }
+          ).then((res)=>{
 
+        });
     },
     queyGanttList() {
       this.axios.get(services.queryGanttList).then((res) => {

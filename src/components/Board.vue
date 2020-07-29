@@ -21,7 +21,7 @@
 <script>
 import { openURL } from "quasar";
 export default {
-  name: "Info",
+  name: "Board",
   methods: {
     github() {
       openURL("https://github.com/neuronetio/gantt-elastic");

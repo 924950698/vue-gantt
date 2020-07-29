@@ -3,7 +3,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import App from './App.vue';
 import Gantt from './components/Gantt.vue';
-import Info from './components/Info.vue';
+import Board from './components/Board.vue';
 import Router from 'vue-router';
 Vue.use(Router);
 Vue.use(VueAxios, axios);
@@ -15,8 +15,8 @@ const router = new Router({
       component: Gantt
     },
     {
-      path: '/info',
-      component: Info
+      path: '/board',
+      component: Board
     }
   ]
 });
