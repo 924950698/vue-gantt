@@ -140,7 +140,7 @@ let data = [{
         }
     }
 }];
-
+let token;
 let tasks = [];
 let options = {
   taskMapping: {
@@ -291,44 +291,47 @@ export default {
   mounted() {
     // this.queyGanttList();
     this.jiraLogin();
-    this.getProjects();
+    // this.getProjects();
   },
   methods: {
     jiraLogin(){
-
+        this.axios.post(services.jiraLogin,{username:'tianhuiying',password:'Thuiy123'}).then((res)=>{
+          if(res && res.data){
+            
+            this.token=res.data.session.value;
+            console.log("token",this.token);
+          }
+        });
     },
     getProjects(){
 
     },
-    // queyGanttList() {
-    //   this.axios.get(services.queryGanttList).then((res) => {
-    //     if (res && res.data) {
-    //       const data = res.data;
-    //       data.map((item) => {
-    //         item.start = getDate(24 * getStartDate(item.startDate));
-    //         item.endDate = getDate(24 * getStartDate(item.endDate));
-    //         item.duration = item.endDate - item.startDate +24*60*60*1000;
-    //         item.proType = actionsType.get(item.proType);
-    //         if(item.link){
-    //             item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
-    //             item.style = {
-    //                 base: {
-    //                 fill: "#0287D0",
-    //                 stroke: "#0077C0",
-    //                 },
-    //             };
-    //         }
-        
-    //         item.type = "milestone";
-          
-            
-    //         delete item.link;
-    //         delete item.startDate;
-    //         this.tasks.push(item);
-    //       });
-    //     }
-    //   });
-    // },
+    queyGanttList() {
+      this.axios.get(services.queryGanttList).then((res) => {
+        if (res && res.data) {
+          const data = res.data;
+          data.map((item) => {
+            item.start = getDate(24 * getStartDate(item.startDate));
+            item.endDate = getDate(24 * getStartDate(item.endDate));
+            item.duration = item.endDate - item.startDate +24*60*60*1000;
+            item.proType = actionsType.get(item.proType);
+            if(item.link){
+                item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
+                item.style = {
+                    base: {
+                    fill: "#0287D0",
+                    stroke: "#0077C0",
+                    },
+                };
+            }
+            item.type = "milestone";
+            delete item.link;
+            delete item.startDate;
+            this.tasks.push(item);
+          });
+        }
+      });
+    },
     addTask() {
         this.tasks.push({
           id: this.lastId++,
