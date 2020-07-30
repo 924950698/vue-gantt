@@ -299,8 +299,8 @@ export default {
   },
   mounted() {
     // this.queyGanttList();
-    // this.jiraLogin();
-    this.getProjects();
+    this.jiraLogin();
+    // this.getProjects();
   },
   methods: {
     jiraLogin(){

@@ -1,4 +1,4 @@
-const baseUrl = 'http://jira.dev.aixuexi.com';
+const baseUrl = 'http://39.106.60.3:8080';
 
 const jiraLogin = baseUrl + "/rest/auth/1/session";
 const getProjects = baseUrl +"/rest/api/2/search";
