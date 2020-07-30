@@ -41,17 +41,13 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
-<<<<<<< HEAD
 
 
 let token = "14D4D45BC6C1AA6FC9FBFD91F7EA4CBB";
 let credentials = btoa(services.username + ':' + token);
 let basicAuth = 'Basic ' + credentials;
 
-let data = [{
-=======
-let resData = [{
->>>>>>> 2d181a25624b5c2b61bd980fbb9889a1169c9508
+let resdata = [{
     "id": "47381",
     "key": "TOL-124",//需求id
     "fields": {
@@ -310,17 +306,14 @@ export default {
   },
   methods: {
     jiraLogin(){
-<<<<<<< HEAD
-        this.axios.post(services.jiraLogin,{username:services.username,password:services.password})
-        .then((res)=>{
-=======
+        // this.axios.post(services.jiraLogin,{username:services.username,password:services.password})
+        // .then((res)=>{
         const params = {username:'tianhuiying',password:'Thuiy123'};
         this.axios.post(jiraUrl.info, qs.parse(params), { 
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then((res)=>{
->>>>>>> 2d181a25624b5c2b61bd980fbb9889a1169c9508
           if(res && res.data){
             this.token = res.data.session.value;
             // console.log("token", this.token);
