@@ -21,9 +21,9 @@
 import GanttElastic from "gantt-elastic";
 import GanttHeader from "gantt-elastic-header";
 import dayjs from "dayjs";
-import services from "../services/jiraUrl.js";
+import jiraUrl from "../services/jiraUrl.js";
 import { getStartDate } from "../utils/utils.js";
-
+import qs from 'qs';
 
 // just helper to get current dates  获取当前时间
 function getDate(hours) {
@@ -41,6 +41,7 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
+<<<<<<< HEAD
 
 
 let token = "14D4D45BC6C1AA6FC9FBFD91F7EA4CBB";
@@ -48,6 +49,9 @@ let credentials = btoa(services.username + ':' + token);
 let basicAuth = 'Basic ' + credentials;
 
 let data = [{
+=======
+let resData = [{
+>>>>>>> 2d181a25624b5c2b61bd980fbb9889a1169c9508
     "id": "47381",
     "key": "TOL-124",//需求id
     "fields": {
@@ -293,6 +297,8 @@ export default {
       basicAuth,
       tasks,
       options,
+      token,
+      resData,
       dynamicStyle: {},
       lastId: 16,
     };
@@ -304,12 +310,20 @@ export default {
   },
   methods: {
     jiraLogin(){
+<<<<<<< HEAD
         this.axios.post(services.jiraLogin,{username:services.username,password:services.password})
         .then((res)=>{
+=======
+        const params = {username:'tianhuiying',password:'Thuiy123'};
+        this.axios.post(jiraUrl.info, qs.parse(params), { 
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((res)=>{
+>>>>>>> 2d181a25624b5c2b61bd980fbb9889a1169c9508
           if(res && res.data){
-            
-            this.token=res.data.session.value;
-            console.log("token",this.token);
+            this.token = res.data.session.value;
+            // console.log("token", this.token);
           }
         });
     },
@@ -325,7 +339,7 @@ export default {
         });
     },
     queyGanttList() {
-      this.axios.get(services.queryGanttList).then((res) => {
+      this.axios.get(jiraUrl.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
           data.map((item) => {
@@ -366,7 +380,7 @@ export default {
     tasksUpdate(tasks) {
         this.tasks = tasks;
     },
-    optionsUpdate(options) {
+    optionsUpdate() {
         // this.options = options;
     },
     styleUpdate(style) {

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Gantt from "./components/Gantt.vue";
+// import Gantt from "./components/Gantt.vue";
 
 export default {
   name: "LayoutDefault",

@@ -1,26 +1,28 @@
-module.exports = {
-  // devServer: {
-  //   open: true,
+const axios = require('axios');
 
-  //   proxy: {
-  //       '/rest': {
-  //             // 此处的写法，目的是为了 将 /api 替换成 http://jira.dev.aixuexi.com
-  //           target: 'https://39.106.60.3:8080',
-  //             // 允许跨域
-  //           changeOrigin: true,
-  //           ws: true,
-  //           pathRewrite: {
-  //                 '^/rest': ''
-  //           }
-  //       }
-  //   }
-  // },
+axios.defaults.baseURL = '/api'
+console.log('123')
+
+module.exports = {
   pluginOptions: {
     quasar: {
-      treeShake: true
-    }
-  }, 
-  transpileDependencies: [
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/
-  ]
-}
+      treeShake: true,
+    },
+  },
+  configureWebpack: {
+    devServer: {
+        proxy: {
+          "/api": {
+            target: "http://jira.dev.aixuexi.com", // 此处的写法，目的是为了 将 /api 替换成 https://www.baidu.com/
+            changeOrigin: true, // 允许跨域
+            ws: true,
+            secure: false, // 使用的是http协议则设置为false，https协议则设置为true
+            pathRewrite: {
+              "^/api": "",
+            },
+          },
+        },
+      },
+  },
+  transpileDependencies: [/[\\\/]node_modules[\\\/]quasar[\\\/]/],
+};
