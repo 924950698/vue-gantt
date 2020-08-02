@@ -50,22 +50,13 @@ let data = [{
             "id": "1"
         },
         "customfield_11820": "0%",//整体开发进度
-        "status": {
-            "name": "技术方案评审通过",//状态
-        },
-        "components": [
-            {
-                "name": "学习产品"//需求类型
-            }
-        ],
+        "status": {"name": "技术方案评审通过",},//状态
+        "components": [{"name": "学习产品"}],//需求类型
         "customfield_10211": "2020-08-28T21:41:00.000+0800",//实际上线时间
         "customfield_11300": "2020-08-14",//计划提测时间
         "customfield_11812": "2020-07-30",//启动开发时间
-        "customfield_11811": [
-            {
-                "displayName": "刘孟青",//rd-pc客户端
-            }
-        ],
+        "customfield_11811": [{ "displayName": "刘孟青", }],//rd-pc客户端
+           
         "customfield_11814": "2020-08-17",//测试完成时间
         "customfield_11813": "2020-08-16",//开始测试时间
         "customfield_11818": "20%",//整体项目进度
@@ -79,9 +70,6 @@ let data = [{
         "customfield_11633": "14",//测试工时
         "customfield_11632": "15",//后端开发工时
         "customfield_11631": "60",//前端开发工时
-        "customfield_11622": {
-            "displayName": "黄中博",//UI
-        },
         "customfield_11625": [
             {
                 "displayName": "高立康",//后端1
@@ -122,7 +110,6 @@ let data = [{
              
             }
         ],
-        "customfield_11621": "https://www.figma.com/file/a52UaUq9ELdx09wvboC1IA/%E4%B8%8A%E5%8F%B0%E5%8F%91%E8%A8%80?node-id=0%3A1",//ui地址
         "customfield_11613": {
             "value": "产品需求",
         },
