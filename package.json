@@ -21,12 +21,13 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.7.0",
     "@vue/cli-plugin-eslint": "^3.7.0",
-    "@vue/cli-service": "^3.7.0",
+    "@vue/cli-service": "^4.5.0",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-imports": "1.5.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "exlint": "^0.1.6",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "vue-cli-plugin-quasar": "^1.0.0-beta.1",
@@ -41,7 +42,10 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "no-unused-vars": "off",
+      "no-console": "off"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

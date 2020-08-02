@@ -3,7 +3,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import App from './App.vue';
 import Gantt from './components/Gantt.vue';
-import Info from './components/Info.vue';
+import Board from './components/Board.vue';
 import Router from 'vue-router';
 Vue.use(Router);
 Vue.use(VueAxios, axios);
@@ -15,8 +15,8 @@ const router = new Router({
       component: Gantt
     },
     {
-      path: '/info',
-      component: Info
+      path: '/board',
+      component: Board
     }
   ]
 });
@@ -65,6 +65,13 @@ Vue.use(Quasar, {
 });
 
 Vue.config.productionTip = false;
+
+// step2：把axios挂载到vue的原型中，在vue中每个组件都可以使用axios发送请求,
+// 不需要每次都 import一下 axios了，直接使用 $axios 即可
+// Vue.prototype.$axios = axios;
+
+// step3：使每次请求都会带一个 /api 前缀 
+// axios.defaults.baseURL = '/rest';
 
 new Vue({
   router,
