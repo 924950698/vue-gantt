@@ -21,7 +21,7 @@
 import GanttElastic from "gantt-elastic";
 import GanttHeader from "gantt-elastic-header";
 import dayjs from "dayjs";
-import jiraUrl from "../services/jiraUrl.js";
+import services from "../services/baseUrl.js";
 import { getStartDate } from "../utils/utils.js";
 import qs from 'qs';
 
@@ -41,11 +41,6 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
-
-
-let token = "14D4D45BC6C1AA6FC9FBFD91F7EA4CBB";
-let credentials = btoa(services.username + ':' + token);
-let basicAuth = 'Basic ' + credentials;
 
 let resdata = [{
     "id": "47381",
@@ -288,51 +283,18 @@ export default {
   },
   data() {
     return {
-      token,
-      credentials,
-      basicAuth,
       tasks,
       options,
-      token,
-      resData,
       dynamicStyle: {},
       lastId: 16,
     };
   },
   mounted() {
-    // this.queyGanttList();
-    this.jiraLogin();
-    // this.getProjects();
+    this.queyGanttList();
   },
   methods: {
-    jiraLogin(){
-        // this.axios.post(services.jiraLogin,{username:services.username,password:services.password})
-        // .then((res)=>{
-        const params = {username:'tianhuiying',password:'Thuiy123'};
-        this.axios.post(jiraUrl.info, qs.parse(params), { 
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((res)=>{
-          if(res && res.data){
-            this.token = res.data.session.value;
-            // console.log("token", this.token);
-          }
-        });
-    },
-    getProjects(){
-      
-        this.axios.get(services.getProjects,
-             {
-                params: {jql: services.jql},
-                headers: { 'Authorization':  this.basicAuth }
-              }
-          ).then((res)=>{
-
-        });
-    },
     queyGanttList() {
-      this.axios.get(jiraUrl.queryGanttList).then((res) => {
+      this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
           data.map((item) => {
