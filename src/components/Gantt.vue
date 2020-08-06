@@ -41,6 +41,7 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
+const jiraLink='http://jira.dev.aixuexi.com/browse/';
 
 let resdata = [{
     "id": "47381",
@@ -283,6 +284,7 @@ export default {
   },
   data() {
     return {
+      jiraLink,
       tasks,
       options,
       dynamicStyle: {},
@@ -294,6 +296,36 @@ export default {
   },
   methods: {
     queyGanttList() {
+      this.axios.get(services.queryGanttList).then((res) => {
+        if (res && res.data) {
+          const data = res.data.issues;
+          data.map((item) => {
+            
+            item.start = getDate(24 * getStartDate(item.fields.customfield_11107));
+            item.endDate = getDate(24 * getStartDate(item.endDate));
+            item.duration = item.endDate - item.startDate +24*60*60*1000;
+            item.proType = actionsType.get(item.proType);
+            link= jiraLink+item.key;
+            item.user=item.fields.reporter.displayName;
+            
+            if(item.link){
+                item.label = `<a href= ${link} target="_blank" style="color:blue;">${item.fields.summary}</a>`;
+                item.style = {
+                    base: {
+                    fill: "#0287D0",
+                    stroke: "#0077C0",
+                    },
+                };
+            }
+            item.type = "milestone";
+            delete item.link;
+            delete item.startDate;
+            this.tasks.push(item);
+          });
+        }
+      });
+    },
+    queyGanttList2() {
       this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
@@ -318,7 +350,7 @@ export default {
           });
         }
       });
-    },
+    },  
     addTask() {
         this.tasks.push({
           id: this.lastId++,
