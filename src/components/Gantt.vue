@@ -42,6 +42,7 @@ function getDate(hours) {
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
 const jiraLink='http://jira.dev.aixuexi.com/browse/';
+const link ='';
 
 let resdata = [{
     "id": "47381",
@@ -194,27 +195,34 @@ let options = {
         //   }
         // }
       },
+      // {
+      //   id: 3,
+      //   label: "优先级",
+      //   value: "level",
+      //   width: 130,
+      //   html: true,
+      // },
       {
-        id: 3,
+        id: 4,
         label: "负责人",
         value: "user",
         width: 130,
         html: true,
       },
       {
-        id: 3,
+        id: 5,
         label: "开始时间",
         value: (task) => dayjs(task.start).format("YYYY-MM-DD"),
         width: 78,
       },
       {
-        id: 4,
+        id: 6,
         label: "结束时间",
         value: (task) => dayjs(task.endDate).format("YYYY-MM-DD"),
         width: 78,
       },
       {
-        id: 5,
+        id: 7,
         label: "项目类型",
         value: "proType",
         width: 68,
@@ -230,7 +238,7 @@ let options = {
         },
       },
       {
-        id: 6,
+        id: 8,
         label: "进度%",
         value: "progress",
         width: 55,
@@ -246,7 +254,7 @@ let options = {
         },
       },
       {
-        id: 7,
+        id: 9,
         label: "风险",
         value: "risk",
         width: 120,
@@ -276,6 +284,14 @@ let actionsType = new Map([
     [null, '—'],
 ]); 
 
+let actionsPriority = new Map([
+    [1, 'P0'],
+    [2, 'P1'],
+    [3, 'P2'],
+    [4, 'P3'],
+    [null, '—'],
+]); 
+
 export default {
   name: "Gantt",
   components: {
@@ -284,6 +300,7 @@ export default {
   },
   data() {
     return {
+      link,
       jiraLink,
       tasks,
       options,
@@ -301,11 +318,15 @@ export default {
           const data = res.data.issues;
           data.map((item) => {
             
-            item.start = getDate(24 * getStartDate(item.fields.customfield_11107));
-            item.endDate = getDate(24 * getStartDate(item.endDate));
-            item.duration = item.endDate - item.startDate +24*60*60*1000;
-            item.proType = actionsType.get(item.proType);
-            link= jiraLink+item.key;
+            // item.level=actionsPriority.get(item.priority.id);
+            item.start = getDate(24 * getStartDate(item.fields.customfield_11615));
+            item.endDate = getDate(24 * getStartDate(item.fields.customfield_11107));
+            item.duration = item.endDate - item.start +24*60*60*1000;
+            item.percent = item.customfield_11818;
+            item.proType = item.customfield_11613.value;
+            item.risk = "备注";
+
+            this.link= jiraLink+item.key;
             item.user=item.fields.reporter.displayName;
             
             if(item.link){
@@ -318,9 +339,38 @@ export default {
                 };
             }
             item.type = "milestone";
+            
             delete item.link;
             delete item.startDate;
+            delete item.key;
+            delete item.summary;
+            delete item.reporter;
+            delete item.components;
+            delete item.priority;
+            delete item.customfield_11615;
+            delete item.customfield_11107;
+            delete item.customfield_11818;
+            delete item.customfield_11613;
+            delete item.customfield_10211;
+            delete item.customfield_11820;
+            delete item.customfield_11300;
+            delete item.customfield_11812;
+            delete item.customfield_11811;
+            delete item.customfield_11814;
+            delete item.customfield_11813;
+            delete item.customfield_11819;
+            delete item.customfield_11633;
+            delete item.customfield_11632;
+            delete item.customfield_11631;
+            delete item.customfield_11625;
+            delete item.customfield_11624;
+            delete item.customfield_11627;
+            delete item.customfield_11626;
+            delete item.customfield_11628;
+            delete item.customfield_11617;
+            delete item.customfield_11604;
             this.tasks.push(item);
+            console.log("item:",item);
           });
         }
       });
