@@ -312,70 +312,7 @@ export default {
     this.queyGanttList();
   },
   methods: {
-    queyGanttList() {
-      this.axios.get(services.queryGanttList).then((res) => {
-        if (res && res.data) {
-          const data = res.data.issues;
-          data.map((item) => {
-            
-            // item.level=actionsPriority.get(item.priority.id);
-            item.start = getDate(24 * getStartDate(item.fields.customfield_11615));
-            item.endDate = getDate(24 * getStartDate(item.fields.customfield_11107));
-            item.duration = item.endDate - item.start +24*60*60*1000;
-            item.percent = item.customfield_11818;
-            item.proType = item.customfield_11613.value;
-            item.risk = "备注";
-
-            this.link= jiraLink+item.key;
-            item.user=item.fields.reporter.displayName;
-            
-            if(item.link){
-                item.label = `<a href= ${link} target="_blank" style="color:blue;">${item.fields.summary}</a>`;
-                item.style = {
-                    base: {
-                    fill: "#0287D0",
-                    stroke: "#0077C0",
-                    },
-                };
-            }
-            item.type = "milestone";
-            
-            delete item.link;
-            delete item.startDate;
-            delete item.key;
-            delete item.summary;
-            delete item.reporter;
-            delete item.components;
-            delete item.priority;
-            delete item.customfield_11615;
-            delete item.customfield_11107;
-            delete item.customfield_11818;
-            delete item.customfield_11613;
-            delete item.customfield_10211;
-            delete item.customfield_11820;
-            delete item.customfield_11300;
-            delete item.customfield_11812;
-            delete item.customfield_11811;
-            delete item.customfield_11814;
-            delete item.customfield_11813;
-            delete item.customfield_11819;
-            delete item.customfield_11633;
-            delete item.customfield_11632;
-            delete item.customfield_11631;
-            delete item.customfield_11625;
-            delete item.customfield_11624;
-            delete item.customfield_11627;
-            delete item.customfield_11626;
-            delete item.customfield_11628;
-            delete item.customfield_11617;
-            delete item.customfield_11604;
-            this.tasks.push(item);
-            console.log("item:",item);
-          });
-        }
-      });
-    },
-    queyGanttList2() {
+     queyGanttList() {
       this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
@@ -383,7 +320,7 @@ export default {
             item.start = getDate(24 * getStartDate(item.startDate));
             item.endDate = getDate(24 * getStartDate(item.endDate));
             item.duration = item.endDate - item.startDate +24*60*60*1000;
-            item.proType = actionsType.get(item.proType);
+            // item.proType = actionsType.get(item.proType);
             if(item.link){
                 item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
                 item.style = {
@@ -401,6 +338,70 @@ export default {
         }
       });
     },  
+    // queyGanttList1() {
+    //   this.axios.get(services.queryGanttList).then((res) => {
+    //     if (res && res.data) {
+    //       const data = res.data.issues;
+    //       data.map((item) => {
+            
+    //         // item.level=actionsPriority.get(item.priority.id);
+    //         item.start = getDate(24 * getStartDate(item.fields.customfield_11615));
+    //         item.endDate = getDate(24 * getStartDate(item.fields.customfield_11107));
+    //         item.duration = item.endDate - item.start +24*60*60*1000;
+    //         item.percent = item.customfield_11818;
+    //         item.proType = item.customfield_11613.value;
+    //         item.risk = "备注";
+
+    //         this.link= jiraLink+item.key;
+    //         item.user=item.fields.reporter.displayName;
+            
+    //         if(item.link){
+    //             item.label = `<a href= ${link} target="_blank" style="color:blue;">${item.fields.summary}</a>`;
+    //             item.style = {
+    //                 base: {
+    //                 fill: "#0287D0",
+    //                 stroke: "#0077C0",
+    //                 },
+    //             };
+    //         }
+    //         item.type = "milestone";
+            
+    //         delete item.link;
+    //         delete item.startDate;
+    //         delete item.key;
+    //         delete item.summary;
+    //         delete item.reporter;
+    //         delete item.components;
+    //         delete item.priority;
+    //         delete item.customfield_11615;
+    //         delete item.customfield_11107;
+    //         delete item.customfield_11818;
+    //         delete item.customfield_11613;
+    //         delete item.customfield_10211;
+    //         delete item.customfield_11820;
+    //         delete item.customfield_11300;
+    //         delete item.customfield_11812;
+    //         delete item.customfield_11811;
+    //         delete item.customfield_11814;
+    //         delete item.customfield_11813;
+    //         delete item.customfield_11819;
+    //         delete item.customfield_11633;
+    //         delete item.customfield_11632;
+    //         delete item.customfield_11631;
+    //         delete item.customfield_11625;
+    //         delete item.customfield_11624;
+    //         delete item.customfield_11627;
+    //         delete item.customfield_11626;
+    //         delete item.customfield_11628;
+    //         delete item.customfield_11617;
+    //         delete item.customfield_11604;
+    //         this.tasks.push(item);
+    //         console.log("item:",item);
+    //       });
+    //     }
+    //   });
+    // },
+   
     addTask() {
         this.tasks.push({
           id: this.lastId++,
