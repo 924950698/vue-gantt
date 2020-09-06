@@ -21,7 +21,7 @@
 import GanttElastic from "gantt-elastic";
 import GanttHeader from "gantt-elastic-header";
 import dayjs from "dayjs";
-import jiraUrl from "../services/jiraUrl.js";
+import services from "../services/baseUrl.js";
 import { getStartDate } from "../utils/utils.js";
 import qs from 'qs';
 
@@ -41,11 +41,8 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
-
-
-let token = "14D4D45BC6C1AA6FC9FBFD91F7EA4CBB";
-let credentials = btoa(services.username + ':' + token);
-let basicAuth = 'Basic ' + credentials;
+const jiraLink='http://jira.dev.aixuexi.com/browse/';
+const link ='';
 
 let resdata = [{
     "id": "47381",
@@ -185,27 +182,34 @@ let options = {
         //   }
         // }
       },
+      // {
+      //   id: 3,
+      //   label: "优先级",
+      //   value: "level",
+      //   width: 130,
+      //   html: true,
+      // },
       {
-        id: 3,
+        id: 4,
         label: "负责人",
         value: "user",
         width: 130,
         html: true,
       },
       {
-        id: 3,
+        id: 5,
         label: "开始时间",
         value: (task) => dayjs(task.start).format("YYYY-MM-DD"),
         width: 78,
       },
       {
-        id: 4,
+        id: 6,
         label: "结束时间",
         value: (task) => dayjs(task.endDate).format("YYYY-MM-DD"),
         width: 78,
       },
       {
-        id: 5,
+        id: 7,
         label: "项目类型",
         value: "proType",
         width: 68,
@@ -221,7 +225,7 @@ let options = {
         },
       },
       {
-        id: 6,
+        id: 8,
         label: "进度%",
         value: "progress",
         width: 55,
@@ -237,7 +241,7 @@ let options = {
         },
       },
       {
-        id: 7,
+        id: 9,
         label: "风险",
         value: "risk",
         width: 120,
@@ -267,6 +271,14 @@ let actionsType = new Map([
     [null, '—'],
 ]); 
 
+let actionsPriority = new Map([
+    [1, 'P0'],
+    [2, 'P1'],
+    [3, 'P2'],
+    [4, 'P3'],
+    [null, '—'],
+]); 
+
 export default {
   name: "Gantt",
   components: {
@@ -275,58 +287,27 @@ export default {
   },
   data() {
     return {
-      token,
-      credentials,
-      basicAuth,
+      link,
+      jiraLink,
       tasks,
       options,
-      token,
-      resData,
       dynamicStyle: {},
       lastId: 16,
     };
   },
   mounted() {
-    // this.queyGanttList();
-    this.jiraLogin();
-    // this.getProjects();
+    this.queyGanttList();
   },
   methods: {
-    jiraLogin(){
-        // this.axios.post(services.jiraLogin,{username:services.username,password:services.password})
-        // .then((res)=>{
-        const params = {username:'tianhuiying',password:'Thuiy123'};
-        this.axios.post(jiraUrl.info, qs.parse(params), { 
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((res)=>{
-          if(res && res.data){
-            this.token = res.data.session.value;
-            // console.log("token", this.token);
-          }
-        });
-    },
-    getProjects(){
-      
-        this.axios.get(services.getProjects,
-             {
-                params: {jql: services.jql},
-                headers: { 'Authorization':  this.basicAuth }
-              }
-          ).then((res)=>{
-
-        });
-    },
-    queyGanttList() {
-      this.axios.get(jiraUrl.queryGanttList).then((res) => {
+     queyGanttList() {
+      this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
           data.map((item) => {
             item.start = getDate(24 * getStartDate(item.startDate));
             item.endDate = getDate(24 * getStartDate(item.endDate));
             item.duration = item.endDate - item.startDate +24*60*60*1000;
-            item.proType = actionsType.get(item.proType);
+            // item.proType = actionsType.get(item.proType);
             if(item.link){
                 item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
                 item.style = {
@@ -343,7 +324,71 @@ export default {
           });
         }
       });
-    },
+    },  
+    // queyGanttList1() {
+    //   this.axios.get(services.queryGanttList).then((res) => {
+    //     if (res && res.data) {
+    //       const data = res.data.issues;
+    //       data.map((item) => {
+            
+    //         // item.level=actionsPriority.get(item.priority.id);
+    //         item.start = getDate(24 * getStartDate(item.fields.customfield_11615));
+    //         item.endDate = getDate(24 * getStartDate(item.fields.customfield_11107));
+    //         item.duration = item.endDate - item.start +24*60*60*1000;
+    //         item.percent = item.customfield_11818;
+    //         item.proType = item.customfield_11613.value;
+    //         item.risk = "备注";
+
+    //         this.link= jiraLink+item.key;
+    //         item.user=item.fields.reporter.displayName;
+            
+    //         if(item.link){
+    //             item.label = `<a href= ${link} target="_blank" style="color:blue;">${item.fields.summary}</a>`;
+    //             item.style = {
+    //                 base: {
+    //                 fill: "#0287D0",
+    //                 stroke: "#0077C0",
+    //                 },
+    //             };
+    //         }
+    //         item.type = "milestone";
+            
+    //         delete item.link;
+    //         delete item.startDate;
+    //         delete item.key;
+    //         delete item.summary;
+    //         delete item.reporter;
+    //         delete item.components;
+    //         delete item.priority;
+    //         delete item.customfield_11615;
+    //         delete item.customfield_11107;
+    //         delete item.customfield_11818;
+    //         delete item.customfield_11613;
+    //         delete item.customfield_10211;
+    //         delete item.customfield_11820;
+    //         delete item.customfield_11300;
+    //         delete item.customfield_11812;
+    //         delete item.customfield_11811;
+    //         delete item.customfield_11814;
+    //         delete item.customfield_11813;
+    //         delete item.customfield_11819;
+    //         delete item.customfield_11633;
+    //         delete item.customfield_11632;
+    //         delete item.customfield_11631;
+    //         delete item.customfield_11625;
+    //         delete item.customfield_11624;
+    //         delete item.customfield_11627;
+    //         delete item.customfield_11626;
+    //         delete item.customfield_11628;
+    //         delete item.customfield_11617;
+    //         delete item.customfield_11604;
+    //         this.tasks.push(item);
+    //         console.log("item:",item);
+    //       });
+    //     }
+    //   });
+    // },
+   
     addTask() {
         this.tasks.push({
           id: this.lastId++,
