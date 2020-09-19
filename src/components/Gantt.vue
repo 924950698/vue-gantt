@@ -113,13 +113,13 @@ let options = {
       {
         id: 5,
         label: "开始时间",
-        value: (task) => dayjs(task.start).format("YYYY-MM-DD"),
+        value: (task) => task.start ? dayjs(task.start).format("YYYY-MM-DD") : "暂无数据",
         width: 78,
       },
       {
         id: 6,
         label: "结束时间",
-        value: (task) => dayjs(task.endDate).format("YYYY-MM-DD"),
+        value: (task) => task.endDate ? dayjs(task.endDate).format("YYYY-MM-DD") : "暂无数据",
         width: 78,
       },
       {
@@ -220,14 +220,17 @@ export default {
         if (res && res.data) {
           const data = res.data;
           console.log("data==>", data);
-           console.log("data==>", getDate(-24 * 5));
           data.map((item) => {
-           // item.startDate = "1599148800000"; // getDate(24 * getStartDate(item.startDate)); //startDate === null ? 
-            //item.endDate = "1600876800000"; //getDate(24 * getStartDate(item.endDate)); 
+            if(item.startDate) {
+                item.start = getDate(24 * getStartDate(item.startDate));
+            }
+            if(item.endDate) {
+                item.endDate = getDate(24 * getStartDate(item.endDate)); 
+            }
             if(item.endDate && item.startDate ) {
-                item.duration = item.endDate - item.startDate + 24*60*60*1000;
+                item.duration = item.endDate - item.startDate;
             } else {
-                item.duration = 15 * 24 * 60 * 60 * 1000;
+                item.duration = 0;
             }
             item.proType = actionsType.get(item.proType);
             if(item.link){
