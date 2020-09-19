@@ -39,99 +39,13 @@ function getDate(hours) {
     0,
     0
   ).getTime();
+  console.log("ssss",timeStamp)
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
 const jiraLink='http://jira.dev.aixuexi.com/browse/';
 const link ='';
 
-let resdata = [{
-    "id": "47381",
-    "key": "TOL-124",//需求id
-    "fields": {
-        "priority": {
-            "name": "致命",//优先级
-            "id": "1"
-        },
-        "customfield_11820": "0%",//整体开发进度
-        "status": {"name": "技术方案评审通过",},//状态
-        "components": [{"name": "学习产品"}],//需求类型
-        "customfield_10211": "2020-08-28T21:41:00.000+0800",//实际上线时间
-        "customfield_11300": "2020-08-14",//计划提测时间
-        "customfield_11812": "2020-07-30",//启动开发时间
-        "customfield_11811": [{ "displayName": "刘孟青", }],//rd-pc客户端
-           
-        "customfield_11814": "2020-08-17",//测试完成时间
-        "customfield_11813": "2020-08-16",//开始测试时间
-        "customfield_11818": "20%",//整体项目进度
-        "customfield_11819": "0%",//整体测试进度
-        "reporter": {
-            "displayName": "戴永健",//产品
-        },
-        "project": {
-            "name": "创新业务产研团队",//业务线名称
-        },
-        "customfield_11633": "14",//测试工时
-        "customfield_11632": "15",//后端开发工时
-        "customfield_11631": "60",//前端开发工时
-        "customfield_11625": [
-            {
-                "displayName": "高立康",//后端1
-            },
-            {
-                "displayName": "张鹏飞1",//后端2
-            }
-        ],
-        "customfield_11107": "2020-08-31",//计划上线时间
-        "customfield_11624": [
-            {
-                "displayName": "田惠颖",//rd-前端
-            }
-        ],
-        
-        "customfield_11627": [
-            {
-                "displayName": "安雪",//qa1
-            },
-            {
-                "displayName": "邢宁",//qa2
-            }
-        ],
-        "customfield_11626": [
-            {
-                "displayName": "梁海淼",//android开发1
-            },
-            {
-                "displayName": "刘喆0",//android开发2
-            }
-        ],
-        "customfield_11628": [
-            {
-                "displayName": "郭玉涛",//iOS开发1
-            },
-            {
-                "displayName": "李凯0",//iOS开发2
-             
-            }
-        ],
-        "customfield_11613": {
-            "value": "产品需求",
-        },
-        "customfield_11616": "2020-07-27",//技术评审时间
-        "customfield_11615": "2020-07-21",//需求评审时间
-        "customfield_11617": "2020-08-15T21:41:00.000+0800",//实际提测时间
-        "summary": "小组课-上台发言",//需求名称
-        "customfield_11604": "http://iwork.gaosiedu.com/pages/viewpage.action?pageId=69861524",//需求文档地址
-        "comment": {
-            "comments": [
-                {
-                    "body": "备注",
-                }
-            ],
-        }
-    }
-}];
-
-let tasks = [];
+let tasks = [ ];
 let options = {
   taskMapping: {
     progress: "percent",
@@ -296,18 +210,26 @@ export default {
     };
   },
   mounted() {
+    console.log("mounted==>", this.tasks);
     this.queyGanttList();
   },
+
   methods: {
      queyGanttList() {
       this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data;
+          console.log("data==>", data);
+           console.log("data==>", getDate(-24 * 5));
           data.map((item) => {
-            item.start = getDate(24 * getStartDate(item.startDate));
-            item.endDate = getDate(24 * getStartDate(item.endDate));
-            item.duration = item.endDate - item.startDate +24*60*60*1000;
-            // item.proType = actionsType.get(item.proType);
+           // item.startDate = "1599148800000"; // getDate(24 * getStartDate(item.startDate)); //startDate === null ? 
+            //item.endDate = "1600876800000"; //getDate(24 * getStartDate(item.endDate)); 
+            if(item.endDate && item.startDate ) {
+                item.duration = item.endDate - item.startDate + 24*60*60*1000;
+            } else {
+                item.duration = 15 * 24 * 60 * 60 * 1000;
+            }
+            item.proType = actionsType.get(item.proType);
             if(item.link){
                 item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
                 item.style = {
@@ -318,77 +240,13 @@ export default {
                 };
             }
             item.type = "milestone";
-            delete item.link;
-            delete item.startDate;
             this.tasks.push(item);
+            console.log("接口返回的item==>", item);
           });
         }
       });
     },  
-    // queyGanttList1() {
-    //   this.axios.get(services.queryGanttList).then((res) => {
-    //     if (res && res.data) {
-    //       const data = res.data.issues;
-    //       data.map((item) => {
-            
-    //         // item.level=actionsPriority.get(item.priority.id);
-    //         item.start = getDate(24 * getStartDate(item.fields.customfield_11615));
-    //         item.endDate = getDate(24 * getStartDate(item.fields.customfield_11107));
-    //         item.duration = item.endDate - item.start +24*60*60*1000;
-    //         item.percent = item.customfield_11818;
-    //         item.proType = item.customfield_11613.value;
-    //         item.risk = "备注";
-
-    //         this.link= jiraLink+item.key;
-    //         item.user=item.fields.reporter.displayName;
-            
-    //         if(item.link){
-    //             item.label = `<a href= ${link} target="_blank" style="color:blue;">${item.fields.summary}</a>`;
-    //             item.style = {
-    //                 base: {
-    //                 fill: "#0287D0",
-    //                 stroke: "#0077C0",
-    //                 },
-    //             };
-    //         }
-    //         item.type = "milestone";
-            
-    //         delete item.link;
-    //         delete item.startDate;
-    //         delete item.key;
-    //         delete item.summary;
-    //         delete item.reporter;
-    //         delete item.components;
-    //         delete item.priority;
-    //         delete item.customfield_11615;
-    //         delete item.customfield_11107;
-    //         delete item.customfield_11818;
-    //         delete item.customfield_11613;
-    //         delete item.customfield_10211;
-    //         delete item.customfield_11820;
-    //         delete item.customfield_11300;
-    //         delete item.customfield_11812;
-    //         delete item.customfield_11811;
-    //         delete item.customfield_11814;
-    //         delete item.customfield_11813;
-    //         delete item.customfield_11819;
-    //         delete item.customfield_11633;
-    //         delete item.customfield_11632;
-    //         delete item.customfield_11631;
-    //         delete item.customfield_11625;
-    //         delete item.customfield_11624;
-    //         delete item.customfield_11627;
-    //         delete item.customfield_11626;
-    //         delete item.customfield_11628;
-    //         delete item.customfield_11617;
-    //         delete item.customfield_11604;
-    //         this.tasks.push(item);
-    //         console.log("item:",item);
-    //       });
-    //     }
-    //   });
-    // },
-   
+    
     addTask() {
         this.tasks.push({
           id: this.lastId++,
