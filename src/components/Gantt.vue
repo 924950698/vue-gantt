@@ -45,7 +45,38 @@ function getDate(hours) {
 const jiraLink='http://jira.dev.aixuexi.com/browse/';
 const link ='';
 
-let tasks = [ ];
+let tasks = [
+  // {
+  //   duration: 1209600000,
+  //   endDate: "2020-07-21",
+  //   id: 3,
+  //   label: "需求：直播课",
+  //   percent: 85,
+  //   proType: "产品需求",
+  //   risk: "风险预警xxx",
+  //   start: -120,
+  //   type: "milestone",
+  //   user: "John Doe",
+  // },
+  // {
+  //   id: 2,
+  //   label: '需求：直播课',
+  //   user:'John Doe',
+  //   start: -120,
+  //   endDate: '2020-07-21',
+  //   duration: 14 * 24 * 60 * 60 * 1000,
+  //   percent: 85,
+  //   type: "milestone",
+  //   proType: "产品需求",
+  //   risk: "风险预警xxx",
+  //   style: {
+  //     base: {
+  //       fill: "#0287D0",
+  //       stroke: "#0077C0"
+  //     }
+  //   }
+  // },
+];
 let options = {
   taskMapping: {
     progress: "percent",
@@ -217,32 +248,33 @@ export default {
   methods: {
      queyGanttList() {
       this.axios.get(services.queryGanttList).then((res) => {
+        console.log("res==>", res);
         if (res && res.data) {
           const data = res.data;
           console.log("data==>", data);
           data.map((item) => {
-            if(item.startDate) {
-                item.start = getDate(24 * getStartDate(item.startDate));
-            }
-            if(item.endDate) {
-                item.endDate = getDate(24 * getStartDate(item.endDate)); 
-            }
-            if(item.endDate && item.startDate ) {
-                item.duration = item.endDate - item.startDate;
-            } else {
-                item.duration = 0;
-            }
-            item.proType = actionsType.get(item.proType);
-            if(item.link){
-                item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
-                item.style = {
-                    base: {
-                    fill: "#0287D0",
-                    stroke: "#0077C0",
-                    },
-                };
-            }
-            item.type = "milestone";
+            // if(item.startDate) {
+            //     item.start = getDate(24 * getStartDate(item.startDate));
+            // }
+            // if(item.endDate) {
+            //     item.endDate = getDate(24 * getStartDate(item.endDate)); 
+            // }
+            // if(item.endDate && item.startDate ) {
+            //     item.duration = item.endDate - item.startDate;
+            // } else {
+            //     item.duration = 0;
+            // }
+            // item.proType = actionsType.get(item.proType);
+            // if(item.link){
+            //     item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
+            //     item.style = {
+            //         base: {
+            //         fill: "#0287D0",
+            //         stroke: "#0077C0",
+            //         },
+            //     };
+            // }
+            // item.type = "milestone";
             this.tasks.push(item);
             console.log("接口返回的item==>", item);
           });
@@ -251,17 +283,20 @@ export default {
     },  
     
     addTask() {
-        this.tasks.push({
-          id: this.lastId++,
-          label:
-            '<a href="https://images.pexels.com/photos/423364/pexels-photo-423364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" target="_blank" style="color:#0077c0;">Yeaahh! you have added a task bro!</a>',
-          user:
-            '<a href="https://images.pexels.com/photos/423364/pexels-photo-423364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" target="_blank" style="color:#0077c0;">Awesome!</a>',
-          start: getDate(24 * 3),
-          duration: 1 * 24 * 60 * 60 * 1000,
-          percent: 50,
-          type: "project",
-        });
+
+      
+
+        // this.tasks.push({
+        //   id: this.lastId++,
+        //   label:
+        //     '<a href="https://images.pexels.com/photos/423364/pexels-photo-423364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" target="_blank" style="color:#0077c0;">Yeaahh! you have added a task bro!</a>',
+        //   user:
+        //     '<a href="https://images.pexels.com/photos/423364/pexels-photo-423364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" target="_blank" style="color:#0077c0;">Awesome!</a>',
+        //   start: getDate(24 * 3),
+        //   duration: 1 * 24 * 60 * 60 * 1000,
+        //   percent: 50,
+        //   type: "project",
+        // });
     },
     tasksUpdate(tasks) {
         this.tasks = tasks;
