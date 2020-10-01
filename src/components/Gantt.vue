@@ -10,7 +10,57 @@
       <gantt-header slot="header"></gantt-header>
     </gantt-elastic>
     <div class="q-mt-md" />
-    <q-btn @click="addTask" icon="mdi-plus" label="增加需求" />
+    <el-button type="text" @click="dialogFormVisible = true">增加需求 Dialog</el-button>
+      <el-dialog title="新增" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+           <el-form-item label="id" :label-width="formLabelWidth">
+            <el-input v-model="form.id" autocomplete="off" style="width: 300px"  maxlength=10 show-word-limit></el-input>
+          </el-form-item>
+          <el-form-item label="项目名称" :label-width="formLabelWidth">
+            <el-input v-model="form.label" autocomplete="off" style="width: 300px"  maxlength=10 show-word-limit></el-input>
+          </el-form-item>
+          <el-form-item label="负责人" :label-width="formLabelWidth">
+            <el-input v-model="form.user" autocomplete="off" style="width: 300px"  maxlength=10 show-word-limit></el-input>
+          </el-form-item>
+
+          <el-form-item label="开始时间" :label-width="formLabelWidth">
+             <div class="block">
+              <el-date-picker
+                v-model="form.start"
+                type="date"
+                value-format="yyyy-MM-dd HH-mm-ss"
+                placeholder="选择日期">
+              </el-date-picker>
+            </div>
+          </el-form-item>
+
+          <el-form-item label="结束时间" :label-width="formLabelWidth">
+             <div class="block">
+              <el-date-picker
+                v-model="form.endDate"
+                type="date"
+                value-format="yyyy-MM-dd HH-mm-ss"
+                placeholder="选择日期">
+              </el-date-picker>
+            </div>
+          </el-form-item>
+
+          <el-form-item label="项目类型" :label-width="formLabelWidth">
+            <el-input v-model="form.proType" autocomplete="off" style="width: 300px"  maxlength=10 show-word-limit></el-input>
+          </el-form-item>
+          <el-form-item label="进度" :label-width="formLabelWidth">
+            <el-input v-model="form.percent" autocomplete="off" style="width: 300px"  maxlength=10 show-word-limit></el-input>
+          </el-form-item>
+          <el-form-item label="风险" :label-width="formLabelWidth">
+            <el-input v-model="form.risk" autocomplete="off" style="width: 300px"  maxlength=10 show-word-limit></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="add">确 定</el-button>
+        </div>
+      </el-dialog>
+
   </q-page>
 </template>
 
@@ -22,7 +72,8 @@ import GanttElastic from "gantt-elastic";
 import GanttHeader from "gantt-elastic-header";
 import dayjs from "dayjs";
 import services from "../services/baseUrl.js";
-import { getStartDate } from "../utils/utils.js";
+import { getStartDate, rTime } from "../utils/utils.js";
+import { AddGannt } from './AddGannt.vue';
 import qs from 'qs';
 
 // just helper to get current dates  获取当前时间
@@ -39,44 +90,15 @@ function getDate(hours) {
     0,
     0
   ).getTime();
-  console.log("ssss",timeStamp)
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
 const jiraLink='http://jira.dev.aixuexi.com/browse/';
 const link ='';
 
 let tasks = [
-  // {
-  //   duration: 1209600000,
-  //   endDate: "2020-07-21",
-  //   id: 3,
-  //   label: "需求：直播课",
-  //   percent: 85,
-  //   proType: "产品需求",
-  //   risk: "风险预警xxx",
-  //   start: -120,
-  //   type: "milestone",
-  //   user: "John Doe",
-  // },
-  // {
-  //   id: 2,
-  //   label: '需求：直播课',
-  //   user:'John Doe',
-  //   start: -120,
-  //   endDate: '2020-07-21',
-  //   duration: 14 * 24 * 60 * 60 * 1000,
-  //   percent: 85,
-  //   type: "milestone",
-  //   proType: "产品需求",
-  //   risk: "风险预警xxx",
-  //   style: {
-  //     base: {
-  //       fill: "#0287D0",
-  //       stroke: "#0077C0"
-  //     }
-  //   }
-  // },
+   
 ];
+
 let options = {
   taskMapping: {
     progress: "percent",
@@ -238,54 +260,87 @@ export default {
       options,
       dynamicStyle: {},
       lastId: 16,
+      // 新增弹窗属性
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        id: null,
+        label: '', // 项目名称
+        user: '',  // 负责人
+        start: '', // 开始时间
+        endDate: null, //结束时间
+        duration: 14 * 24 * 60 * 60 * 1000, // 时常
+        percent: 10, //完成度
+        type: '',
+        proType:'', 
+        risk: '', //风险
+      },
+      value1: '',
     };
   },
+
   mounted() {
-    console.log("mounted==>", this.tasks);
     this.queyGanttList();
   },
 
   methods: {
-     queyGanttList() {
+
+    add() {
+      const _this = this;
+      console.log(this.form, '--');
+      this.dialogFormVisible = false;
+      const params = this.form;
+      this.axios.post(services.add, params).then((res) => {
+        console.log("新增==》", this.form, res);
+        if(res.data) {
+          _this.queyGanttList();
+        } 
+      })
+      // .catch((error) => {
+      //   console.log(error);
+      // })
+    },
+
+    queyGanttList() {
+      this.tasks= [];
       this.axios.get(services.queryGanttList).then((res) => {
-        console.log("res==>", res);
         if (res && res.data) {
           const data = res.data;
-          console.log("data==>", data);
           data.map((item) => {
-            // if(item.startDate) {
-            //     item.start = getDate(24 * getStartDate(item.startDate));
-            // }
-            // if(item.endDate) {
-            //     item.endDate = getDate(24 * getStartDate(item.endDate)); 
-            // }
-            // if(item.endDate && item.startDate ) {
-            //     item.duration = item.endDate - item.startDate;
-            // } else {
-            //     item.duration = 0;
-            // }
-            // item.proType = actionsType.get(item.proType);
-            // if(item.link){
-            //     item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
-            //     item.style = {
-            //         base: {
-            //         fill: "#0287D0",
-            //         stroke: "#0077C0",
-            //         },
-            //     };
-            // }
-            // item.type = "milestone";
+            if(item.start) {
+                item.start = getDate(24 * getStartDate(item.start));
+            }
+            if(item.endDate) {
+                item.endDate = getDate(24 * getStartDate(item.endDate)); 
+            }
+            if(item.endDate && item.start ) {
+              item.duration = item.endDate - item.start;
+              console.log("----", item.duration, item.start, getStartDate(item.endDate));
+            } else {
+              item.duration = 0;
+            }
+            item.proType = actionsType.get(item.proType);
+            if(item.link){
+                item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
+                item.style = {
+                    base: {
+                    fill: "#0287D0",
+                    stroke: "#0077C0",
+                    },
+                };
+            }
+            item.type = "milestone";
+
+          console.log("接口返回的item==>", item);
+
             this.tasks.push(item);
-            console.log("接口返回的item==>", item);
           });
+
         }
       });
     },  
     
     addTask() {
-
-      
-
         // this.tasks.push({
         //   id: this.lastId++,
         //   label:
@@ -298,15 +353,19 @@ export default {
         //   type: "project",
         // });
     },
+    
     tasksUpdate(tasks) {
-        this.tasks = tasks;
+      this.tasks = tasks;
     },
+
     optionsUpdate() {
-        // this.options = options;
+      // this.options = options;
     },
+
     styleUpdate(style) {
-        this.dynamicStyle = style;
+      this.dynamicStyle = style;
     },
+
   },
 };
 </script>
