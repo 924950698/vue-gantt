@@ -287,25 +287,20 @@ export default {
 
     add() {
       const _this = this;
-      console.log(this.form, '--');
       this.dialogFormVisible = false;
       const params = this.form;
       this.axios.post(services.add, params).then((res) => {
-        console.log("新增==》", this.form, res);
         if(res.data) {
           _this.queyGanttList();
         } 
       })
-      // .catch((error) => {
-      //   console.log(error);
-      // })
     },
 
     queyGanttList() {
       this.tasks= [];
       this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
-          const data = res.data;
+          const data = res.data.data;
           data.map((item) => {
             if(item.start) {
                 item.start = getDate(24 * getStartDate(item.start));
@@ -315,7 +310,6 @@ export default {
             }
             if(item.endDate && item.start ) {
               item.duration = item.endDate - item.start;
-              console.log("----", item.duration, item.start, getStartDate(item.endDate));
             } else {
               item.duration = 0;
             }
@@ -330,9 +324,6 @@ export default {
                 };
             }
             item.type = "milestone";
-
-          console.log("接口返回的item==>", item);
-
             this.tasks.push(item);
           });
 
