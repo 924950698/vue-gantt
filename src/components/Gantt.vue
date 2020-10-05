@@ -12,6 +12,7 @@
         clearable
         style="width: 200px;"
         @input="change"
+        @clear="clear"
         >
       </el-input>
       <el-button type="primary" icon="el-icon-search" @click="handleToSearch">搜索</el-button>
@@ -28,6 +29,7 @@
     >
       <gantt-header slot="header"></gantt-header>
     </gantt-elastic>
+
     <div class="q-mt-md" />
     <el-dialog :title="modalTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -153,8 +155,8 @@ const link ='';
 let tasks = [];
 
 let actionsType = new Map([
-    [1, '产品需求'],
-    [2, '技术驱动'],
+    ['1', '产品需求'],
+    ['2', '技术驱动'],
     [null, '—'],
 ]);
 
@@ -176,6 +178,7 @@ var vm = {
   data() {
     var self = this;
     return {
+      loading: true,
       input: '',
       searchVal:'',
       modalTitle: '新增',
@@ -183,174 +186,174 @@ var vm = {
       jiraLink,
       tasks,
       options: {
-    taskMapping: {
-      progress: "percent",
-    },
-    maxRows: 100,
-    maxHeight: 500,
-    title: {
-      label: "Your project title as html (link or whatever...)",
-      html: false,
-    },
-    row: {
-      height: 24,
-    },
-    calendar: {
-      hour: {
-        display: true,
+      taskMapping: {
+        progress: "percent",
       },
-    },
-    chart: {
-      progress: {
-        bar: false,
+      maxRows: 100,
+      maxHeight: 500,
+      title: {
+        label: "Your project title as html (link or whatever...)",
+        html: false,
       },
-      expander: {
-        display: true,
+      row: {
+        height: 24,
       },
-    },
-    taskList: {
-      expander: {
-        straight: false,
+      calendar: {
+        hour: {
+          display: true,
+        },
       },
-      columns: [
-        {
-          id: -1,
-          label: "操作",
-          value: "delete",
-          width: 50,
-          html: true,
-          events: {
-            click({ data, column }) {
-              console.log(data, column)
-              self.handleToDetele(data);
+      chart: {
+        progress: {
+          bar: false,
+        },
+        expander: {
+          display: true,
+        },
+      },
+      taskList: {
+        expander: {
+          straight: false,
+        },
+        columns: [
+          {
+            id: -1,
+            label: "操作",
+            value: "delete",
+            width: 50,
+            html: true,
+            events: {
+              click({ data, column }) {
+                console.log(data, column)
+                self.handleToDetele(data);
+              }
+            },
+            style: {
+              "task-list-item-value-wrapper": {
+                "border-right": "0px solid #fff!important",
+              },
             }
           },
-          style: {
-            "task-list-item-value-wrapper": {
-              "border-right": "0px solid #fff!important",
+          {
+            id: 0,
+            label: "",
+            value: "edit",
+            width: 50,
+            html: true,
+            events: {
+              click({ data, column }) {
+                console.log(data, column)
+                self.handleToEdit(data);
+              }
             },
-          }
-        },
-        {
-          id: 0,
-          label: "",
-          value: "edit",
-          width: 50,
-          html: true,
-          events: {
-            click({ data, column }) {
-              console.log(data, column)
-              self.handleToEdit(data);
+            style: {
+              "task-list-item-value-wrapper": {
+                "border-left": "0px solid #fff!important",
+              },
             }
           },
-          style: {
-            "task-list-item-value-wrapper": {
-              "border-left": "0px solid #fff!important",
-            },
-          }
-        },
-        {
-          id: 1,
-          label: "ID",
-          value: "id",
-          width: 40,
-        },
-        {
-          id: 2,
-          label: "项目",
-          value: "label",
-          width: 130,
-          expander: true,
-          html: true,
-          // events: {
-          //   click({ data, column }) {
-          //     alert("description clicked!\n" + data.label);
-          //   }
-          // }
-        },
-        // {
-        //   id: 3,
-        //   label: "优先级",
-        //   value: "level",
-        //   width: 130,
-        //   html: true,
-        // },
-        {
-          id: 4,
-          label: "负责人",
-          value: "user",
-          width: 130,
-          html: true,
-        },
-        {
-          id: 5,
-          label: "开始时间",
-          value: (task) => task.start ? dayjs(task.start).format("YYYY-MM-DD") : "暂无数据",
-          width: 78,
-        },
-        {
-          id: 6,
-          label: "结束时间",
-          value: (task) => task.endDate ? dayjs(task.endDate).format("YYYY-MM-DD") : "暂无数据",
-          width: 78,
-        },
-        {
-          id: 7,
-          label: "项目类型",
-          value: "proType",
-          width: 68,
-          style: {
-            "task-list-header-label": {
-              "text-align": "center",
-              width: "100%",
-            },
-            "task-list-item-value-container": {
-              "text-align": "center",
-              width: "100%",
+          {
+            id: 1,
+            label: "ID",
+            value: "id",
+            width: 40,
+          },
+          {
+            id: 2,
+            label: "项目",
+            value: "label",
+            width: 130,
+            expander: true,
+            html: true,
+            // events: {
+            //   click({ data, column }) {
+            //     alert("description clicked!\n" + data.label);
+            //   }
+            // }
+          },
+          // {
+          //   id: 3,
+          //   label: "优先级",
+          //   value: "level",
+          //   width: 130,
+          //   html: true,
+          // },
+          {
+            id: 4,
+            label: "负责人",
+            value: "user",
+            width: 130,
+            html: true,
+          },
+          {
+            id: 5,
+            label: "开始时间",
+            value: (task) => task.start ? dayjs(task.start).format("YYYY-MM-DD") : "暂无数据",
+            width: 78,
+          },
+          {
+            id: 6,
+            label: "结束时间",
+            value: (task) => task.endDate ? dayjs(task.endDate).format("YYYY-MM-DD") : "暂无数据",
+            width: 78,
+          },
+          {
+            id: 7,
+            label: "项目类型",
+            value: "proType",
+            width: 68,
+            style: {
+              "task-list-header-label": {
+                "text-align": "center",
+                width: "100%",
+              },
+              "task-list-item-value-container": {
+                "text-align": "center",
+                width: "100%",
+              },
             },
           },
-        },
-        {
-          id: 8,
-          label: "进度%",
-          value: "progress",
-          width: 55,
-          style: {
-            "task-list-header-label": {
-              "text-align": "center",
-              width: "100%",
-            },
-            "task-list-item-value-container": {
-              "text-align": "center",
-              width: "100%",
-            },
-          },
-        },
-        {
-          id: 9,
-          label: "风险",
-          value: "risk",
-          width: 120,
-          style: {
-            "task-list-header-label": {
-              "text-align": "center",
-              width: "100%",
-              color: "red",
+          {
+            id: 8,
+            label: "进度%",
+            value: "progress",
+            width: 55,
+            style: {
+              "task-list-header-label": {
+                "text-align": "center",
+                width: "100%",
+              },
+              "task-list-item-value-container": {
+                "text-align": "center",
+                width: "100%",
+              },
             },
           },
-        },
-      ],
+          {
+            id: 9,
+            label: "风险",
+            value: "risk",
+            width: 120,
+            style: {
+              "task-list-header-label": {
+                "text-align": "center",
+                width: "100%",
+                color: "red",
+              },
+            },
+          },
+        ],
+      },
+      locale: {
+        name: "en",
+        Now: "Now",
+        "X-Scale": "Zoom-X",
+        "Y-Scale": "Zoom-Y",
+        "Task list width": "Task list",
+        "Before/After": "Expand",
+        "Display task list": "Task list",
+      },
     },
-    locale: {
-      name: "en",
-      Now: "Now",
-      "X-Scale": "Zoom-X",
-      "Y-Scale": "Zoom-Y",
-      "Task list width": "Task list",
-      "Before/After": "Expand",
-      "Display task list": "Task list",
-    },
-  },
       dynamicStyle: {},
       lastId: 16,
       // 新增弹窗属性
@@ -374,13 +377,27 @@ var vm = {
 
   mounted() {
     var _this = this
-    this.queyGanttList();
+    this.queryGanntList();
   },
 
   methods: {
 
+    openFullScreen(bool) {
+      const loading = this.$loading({
+        lock: bool,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      if(!bool) loading.close();
+    },
+
     change(e) {
       this.searchVal = e;
+    },
+
+    clear() {
+      this.queryGanntList();
     },
 
     handleToSearch() {
@@ -389,7 +406,21 @@ var vm = {
         this.tasks = [];
         if(res.data.data) {
           const data = res.data.data;
-          this.tasksHandler(data);
+          if(data.length > 0) {
+            this.tasksHandler(data);
+          } else {
+            console.log('暂无数据', data);
+            this.$confirm('没有找到相关的数据记录', '提示', {
+              confirmButtonText: '确定',
+              showCancelButton: false,
+              showClose: false,
+              closeOnClickModal:false,
+              type: 'warning'
+            }).then(() => {
+              this.queryGanntList();
+              this.input = '';
+            })
+          }
         }
       })
     },
@@ -409,7 +440,7 @@ var vm = {
                 type: 'success',
                 message: '删除成功!'
               });
-              this.queyGanttList();
+              this.queryGanntList();
             }else {
               this.$message({
                 type: 'error',
@@ -417,7 +448,6 @@ var vm = {
               });
             }
           })
-          
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -444,28 +474,41 @@ var vm = {
     },
 
     add() {
+      this.openFullScreen(true);
       this.dialogFormVisible = false;
       const params = this.form;
-      // 新增
       if(this.modalTitle == '新增') {
-         this.axios.post(services.add, params).then((res) => {
-           console.log('新增==》', res);
+         this.axios.post(services.add, params).then((res) => {// 新增
+          this.openFullScreen(false);
           if(res.data) {
-            this.queyGanttList();
+            this.queryGanntList();
+            this.$message({
+              message: '新建成功！',
+              type: 'success'
+            });
           }
         })
+        .catch(error => {
+          this.openFullScreen(false);
+          this.$message.error('新建失败！');
+        })
       } else {
-        // 编辑
-        this.axios.post(services.update, params).then((res) => {
-           console.log('编辑==》', res);
+        this.axios.post(services.update, params).then((res) => {// 编辑
+          this.openFullScreen(false);
           if(res.data) {
-            this.queyGanttList();
+            this.$message({
+              message: '编辑成功！',
+              type: 'success'
+            });
+            this.queryGanntList();
           }
+        })
+        .catch(error => {
+          this.openFullScreen(false);
+          this.$message.error('编辑失败！');
         })
       }
     },
-
-
 
     editHandler() {
       var count = 11;
@@ -475,16 +518,18 @@ var vm = {
       //   this.axios.post(services.add, params).then((res) => {
       //       console.log('编辑==》', res);
       //       if(res.data) {
-      //         this.queyGanttList();
+      //         this.queryGanntList();
       //       }
       //     })
       // }, 1000);
     },
 
-    queyGanttList() {
+    queryGanntList() {
+      this.openFullScreen(true);
       this.tasks= [];
       this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
+          this.openFullScreen(false);
           const data = res.data.data;
           this.tasksHandler(data);
         }
@@ -524,7 +569,7 @@ var vm = {
       } else {
         item.duration = 0;
       }
-      item.proType = actionsType.get(item.proType);
+      item.proType = actionsType.get(item.proType) || actionsType.get(null);
       if(item.link){
           item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
           item.style = {
@@ -537,6 +582,7 @@ var vm = {
       item.type = "milestone";
       item.edit = `<a style="color:blue; cursor:pointer;">编辑</a>`;
       item.delete = `<a style="color:blue; cursor:pointer;">删除</a>`;
+      console.log(item, '--item--');
       this.tasks.push(item);
     })
   },
@@ -565,6 +611,7 @@ var vm = {
 
     styleUpdate(style) {
       this.dynamicStyle = style;
+      console.log("styleUpdate");
     },
 
   },
