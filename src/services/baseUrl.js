@@ -13,6 +13,7 @@ const deleteGannt = myUrl + gannt.delete;
 const add = myUrl + gannt.created;
 const update = myUrl + gannt.update;
 const destroy = myUrl + gannt.destroy;
+const search = myUrl + gannt.search;
 
 export default {
     queryGanttList,
@@ -20,4 +21,5 @@ export default {
     add,
     update,
     destroy,
+    search,
 }

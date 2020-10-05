@@ -1,5 +1,24 @@
 <template>
+
   <q-page class="q-pa-sm">
+
+   <div style="width: 100%; display: flex;justify-content: space-between; margin: 10px">
+    <el-button type="primary" @click="dialogFormVisible = true, form={}, modalTitle='新增' ">增加需求 Dialog</el-button>
+
+    <div style="padding-right: 30px">
+      <el-input
+        placeholder="请输入搜索内容"
+        v-model="input"
+        clearable
+        style="width: 200px;"
+        @input="change"
+        >
+      </el-input>
+      <el-button type="primary" icon="el-icon-search" @click="handleToSearch">搜索</el-button>
+    </div>
+      
+    </div>
+
     <gantt-elastic
       :options="options"
       :tasks="tasks"
@@ -10,7 +29,6 @@
       <gantt-header slot="header"></gantt-header>
     </gantt-elastic>
     <div class="q-mt-md" />
-    <el-button type="text" @click="dialogFormVisible = true, form={}, modalTitle='新增' ">增加需求 Dialog</el-button>
     <el-dialog :title="modalTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="id" :label-width="formLabelWidth">
@@ -158,6 +176,8 @@ var vm = {
   data() {
     var self = this;
     return {
+      input: '',
+      searchVal:'',
       modalTitle: '新增',
       link,
       jiraLink,
@@ -358,6 +378,22 @@ var vm = {
   },
 
   methods: {
+
+    change(e) {
+      this.searchVal = e;
+    },
+
+    handleToSearch() {
+      const params = { label: this.searchVal };
+      this.axios.post(services.search, params).then((res) => {
+        this.tasks = [];
+        if(res.data.data) {
+          const data = res.data.data;
+          this.tasksHandler(data);
+        }
+      })
+    },
+
     handleToDetele(data) {
       this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -407,27 +443,6 @@ var vm = {
       console.log( this,'--rows--');
     },
 
-
-    //转换年月日方法
-  getDate(format,str){
-    var oDate = new Date(str),
-    oYear = oDate.getFullYear(),
-    oMonth = oDate.getMonth()+1,
-    oDay = oDate.getDate(),
-    oHour = oDate.getHours(),
-    oMin = oDate.getMinutes(),
-    oSec = oDate.getSeconds();
-    return oYear +'-'+ this.getzf(oMonth) +'-'+ this.getzf(oDay) +' '+ this.getzf(oHour) +':'+ this.getzf(oMin) +':'+this.getzf(oSec);//最后拼接时间
-  },
-
-  //补0操作  
-  getzf(num){  
-    if(parseInt(num) < 10){  
-        num = '0'+num;  
-    }  
-    return num;  
-  },
-
     add() {
       this.dialogFormVisible = false;
       const params = this.form;
@@ -471,37 +486,60 @@ var vm = {
       this.axios.get(services.queryGanttList).then((res) => {
         if (res && res.data) {
           const data = res.data.data;
-          data.map((item) => {
-            if(item.start) {
-                item.start = getDate(24 * getStartDate(item.start));
-            }
-            if(item.endDate) {
-                item.endDate = getDate(24 * getStartDate(item.endDate));
-            }
-            if(item.endDate && item.start ) {
-              item.duration = item.endDate - item.start;
-            } else {
-              item.duration = 0;
-            }
-            item.proType = actionsType.get(item.proType);
-            if(item.link){
-                item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
-                item.style = {
-                    base: {
-                    fill: "#0287D0",
-                    stroke: "#0077C0",
-                    },
-                };
-            }
-            item.type = "milestone";
-            item.edit = `<a style="color:blue; cursor:pointer;">编辑</a>`;
-            item.delete = `<a style="color:blue; cursor:pointer;">删除</a>`;
-            this.tasks.push(item);
-          });
-
+          this.tasksHandler(data);
         }
       });
     },
+
+      //转换年月日方法
+  getDate(format,str){
+    var oDate = new Date(str),
+    oYear = oDate.getFullYear(),
+    oMonth = oDate.getMonth()+1,
+    oDay = oDate.getDate(),
+    oHour = oDate.getHours(),
+    oMin = oDate.getMinutes(),
+    oSec = oDate.getSeconds();
+    return oYear +'-'+ this.getzf(oMonth) +'-'+ this.getzf(oDay) +' '+ this.getzf(oHour) +':'+ this.getzf(oMin) +':'+this.getzf(oSec);//最后拼接时间
+  },
+
+  //补0操作  
+  getzf(num){  
+    if(parseInt(num) < 10){  
+        num = '0'+num;  
+    }  
+    return num;  
+  },
+
+  tasksHandler(data) {
+    data.map(item => {
+      if(item.start) {
+          item.start = getDate(24 * getStartDate(item.start));
+      }
+      if(item.endDate) {
+          item.endDate = getDate(24 * getStartDate(item.endDate));
+      }
+      if(item.endDate && item.start ) {
+        item.duration = item.endDate - item.start;
+      } else {
+        item.duration = 0;
+      }
+      item.proType = actionsType.get(item.proType);
+      if(item.link){
+          item.label = `<a href=${item.link} target="_blank" style="color:blue;">${item.label}</a>`;
+          item.style = {
+              base: {
+              fill: "#0287D0",
+              stroke: "#0077C0",
+              },
+          };
+      }
+      item.type = "milestone";
+      item.edit = `<a style="color:blue; cursor:pointer;">编辑</a>`;
+      item.delete = `<a style="color:blue; cursor:pointer;">删除</a>`;
+      this.tasks.push(item);
+    })
+  },
 
     addTask() {
         // this.tasks.push({
