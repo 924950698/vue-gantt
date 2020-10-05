@@ -194,15 +194,39 @@ var vm = {
       },
       columns: [
         {
-          id: 0,
+          id: -1,
           label: "操作",
-          value: "edit",
-          width: 60,
+          value: "delete",
+          width: 50,
           html: true,
           events: {
             click({ data, column }) {
+              console.log(data, column)
+              self.handleToDetele(data);
+            }
+          },
+          style: {
+            "task-list-item-value-wrapper": {
+              "border-right": "0px solid #fff!important",
+            },
+          }
+        },
+        {
+          id: 0,
+          label: "",
+          value: "edit",
+          width: 50,
+          html: true,
+          events: {
+            click({ data, column }) {
+              console.log(data, column)
               self.handleToEdit(data);
             }
+          },
+          style: {
+            "task-list-item-value-wrapper": {
+              "border-left": "0px solid #fff!important",
+            },
           }
         },
         {
@@ -334,6 +358,37 @@ var vm = {
   },
 
   methods: {
+    handleToDetele(data) {
+      this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log('确定');
+          const params = { id: data.id};
+          this.axios.post(services.destroy, params).then((res) => {
+            console.log('删除==》', res);
+            if(res.data.data) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.queyGanttList();
+            }else {
+              this.$message({
+                type: 'error',
+                message: res.message
+              });
+            }
+          })
+          
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
 
     handleToEdit(rows) {
       this.modalTitle = '编辑';
@@ -376,11 +431,39 @@ var vm = {
     add() {
       this.dialogFormVisible = false;
       const params = this.form;
-      this.axios.post(services.add, params).then((res) => {
-        if(res.data) {
-          this.queyGanttList();
-        }
-      })
+      // 新增
+      if(this.modalTitle == '新增') {
+         this.axios.post(services.add, params).then((res) => {
+           console.log('新增==》', res);
+          if(res.data) {
+            this.queyGanttList();
+          }
+        })
+      } else {
+        // 编辑
+        this.axios.post(services.update, params).then((res) => {
+           console.log('编辑==》', res);
+          if(res.data) {
+            this.queyGanttList();
+          }
+        })
+      }
+    },
+
+
+
+    editHandler() {
+      var count = 11;
+      // setInterval(() => {
+      //   count ++;
+      //   const params = {"id":count,"label":"5","user":"5","start":"2020-10-04 00-00-00","endDate":"2020-10-05 00-00-00","proType":"5","percent":"5","risk":"5"}
+      //   this.axios.post(services.add, params).then((res) => {
+      //       console.log('编辑==》', res);
+      //       if(res.data) {
+      //         this.queyGanttList();
+      //       }
+      //     })
+      // }, 1000);
     },
 
     queyGanttList() {
@@ -411,7 +494,8 @@ var vm = {
                 };
             }
             item.type = "milestone";
-            item.edit = ` <a style="color:blue; cursor:pointer;"> 编辑 </a>`;
+            item.edit = `<a style="color:blue; cursor:pointer;">编辑</a>`;
+            item.delete = `<a style="color:blue; cursor:pointer;">删除</a>`;
             this.tasks.push(item);
           });
 
