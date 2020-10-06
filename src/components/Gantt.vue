@@ -2,6 +2,7 @@
 
   <q-page class="q-pa-sm">
 
+  <!-- 搜索 -->
    <div style="width: 100%; display: flex;justify-content: space-between; margin: 10px">
     <el-button type="primary" @click="dialogFormVisible = true, form={}, modalTitle='新增' ">增加需求 Dialog</el-button>
 
@@ -20,6 +21,7 @@
       
     </div>
 
+  <!-- gannt插件 -->
     <gantt-elastic
       :options="options"
       :tasks="tasks"
@@ -30,7 +32,28 @@
       <gantt-header slot="header"></gantt-header>
     </gantt-elastic>
 
+    <!-- 分页 -->
+    <div style="display: flex; justify-content: center;margin-top: 10px;">
+      <!-- <el-pagination
+        background
+        layout="prev, pager, next"
+        @current-change="handleCurrentChange"
+        :total="pageNumber.total">
+      </el-pagination> -->
+
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageNumber.pageCount"
+        :page-sizes="[10, 15, 20, 30]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="pageNumber.total">
+      </el-pagination>
+    </div>
     <div class="q-mt-md" />
+
+    <!-- 新增、编辑弹窗 -->
     <el-dialog :title="modalTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="id" :label-width="formLabelWidth">
@@ -178,6 +201,11 @@ var vm = {
   data() {
     var self = this;
     return {
+      pageNumber: {
+        total: 0,
+        pageCount: 1,
+        pageSizes: 10,
+      },
       loading: true,
       input: '',
       searchVal:'',
@@ -382,10 +410,23 @@ var vm = {
 
   methods: {
 
+    handleSizeChange(val) { // 每页条改变时
+      console.log(`每页 ${val} 条`);
+      this.pageNumber.pageSizes = val;
+      this.queryGanntList();
+    },
+
+
+    handleCurrentChange(val) { //当前页改变时会触发
+      console.log(`当前页: ${val}`);
+      this.pageNumber.pageCount = val;
+      this.queryGanntList();
+    },
+
     openFullScreen(bool) {
       const loading = this.$loading({
         lock: bool,
-        text: 'Loading',
+        text: '拼命加载中...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       });
@@ -407,7 +448,7 @@ var vm = {
         if(res.data.data) {
           const data = res.data.data;
           if(data.length > 0) {
-            this.tasksHandler(data);
+            this.tasksHandler(res.data);
           } else {
             console.log('暂无数据', data);
             this.$confirm('没有找到相关的数据记录', '提示', {
@@ -527,10 +568,14 @@ var vm = {
     queryGanntList() {
       this.openFullScreen(true);
       this.tasks= [];
-      this.axios.get(services.queryGanttList).then((res) => {
+      const params = { 
+        currentPage: this.pageNumber.pageCount,
+        currentSizes: this.pageNumber.pageSizes,
+      };
+      this.axios.get(services.queryGanttList,{params} ).then((res) => {
         if (res && res.data) {
           this.openFullScreen(false);
-          const data = res.data.data;
+          const data = res.data;
           this.tasksHandler(data);
         }
       });
@@ -557,7 +602,7 @@ var vm = {
   },
 
   tasksHandler(data) {
-    data.map(item => {
+    data.data.map(item => {
       if(item.start) {
           item.start = getDate(24 * getStartDate(item.start));
       }
@@ -582,9 +627,10 @@ var vm = {
       item.type = "milestone";
       item.edit = `<a style="color:blue; cursor:pointer;">编辑</a>`;
       item.delete = `<a style="color:blue; cursor:pointer;">删除</a>`;
-      console.log(item, '--item--');
       this.tasks.push(item);
     })
+    console.log(data, '--data--');
+    this.pageNumber.total = data.total;
   },
 
     addTask() {
