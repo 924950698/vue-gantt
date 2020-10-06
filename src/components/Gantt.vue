@@ -45,7 +45,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pageNumber.pageCount"
-        :page-sizes="[10, 15, 20, 30]"
+        :page-sizes="[10, 15, 20, 30, 50]"
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
         :total="pageNumber.total">
@@ -56,7 +56,7 @@
     <!-- 新增、编辑弹窗 -->
     <el-dialog :title="modalTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="id" :label-width="formLabelWidth">
+        <!-- <el-form-item label="id" :label-width="formLabelWidth">
           <el-input
             v-model="form.id"
             autocomplete="off"
@@ -64,7 +64,7 @@
             maxlength="10"
             show-word-limit
           ></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="项目名称" :label-width="formLabelWidth">
           <el-input
             v-model="form.label"
@@ -109,14 +109,16 @@
         </el-form-item>
 
         <el-form-item label="项目类型" :label-width="formLabelWidth">
-          <el-input
-            v-model="form.proType"
-            autocomplete="off"
-            style="width: 300px"
-            maxlength="10"
-            show-word-limit
-          ></el-input>
+          <el-select v-model="form.proType" clearable placeholder="请选择">
+            <el-option
+              v-for="item in optionsSelect"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="进度" :label-width="formLabelWidth">
           <el-input
             v-model="form.percent"
@@ -196,11 +198,19 @@ var vm = {
   components: {
     GanttElastic,
     GanttHeader,
-
   },
+
   data() {
     var self = this;
     return {
+      optionsSelect: [{
+          value: '1',
+          label: '产品需求'
+        }, {
+          value: '2',
+          label: '技术驱动'
+        }],
+        // valueSelect: '',
       pageNumber: {
         total: 0,
         pageCount: 1,
@@ -245,15 +255,15 @@ var vm = {
         },
         columns: [
           {
-            id: -1,
+            id: -2,
             label: "操作",
-            value: "delete",
+            value: "childNode",
             width: 50,
             html: true,
             events: {
               click({ data, column }) {
                 console.log(data, column)
-                self.handleToDetele(data);
+                self.handleToCreatChildNode(data);
               }
             },
             style: {
@@ -277,6 +287,24 @@ var vm = {
             style: {
               "task-list-item-value-wrapper": {
                 "border-left": "0px solid #fff!important",
+              },
+            }
+          },
+          {
+            id: -1,
+            label: "",
+            value: "delete",
+            width: 50,
+            html: true,
+            events: {
+              click({ data, column }) {
+                console.log(data, column)
+                self.handleToDetele(data);
+              }
+            },
+            style: {
+              "task-list-item-value-wrapper": {
+                "border-right": "0px solid #fff!important",
               },
             }
           },
@@ -388,6 +416,7 @@ var vm = {
       dialogFormVisible: false,
       formLabelWidth: '120px',
       form: {
+        parentId: null,
         id: null,
         label: '', // 项目名称
         user: '',  // 负责人
@@ -409,6 +438,11 @@ var vm = {
   },
 
   methods: {
+
+    handleToCreatChildNode(rows) {
+      this.dialogFormVisible = true;
+      this.form.parentId = rows.id;
+    },
 
     handleSizeChange(val) { // 每页条改变时
       console.log(`每页 ${val} 条`);
@@ -522,6 +556,9 @@ var vm = {
       this.openFullScreen(true);
       this.dialogFormVisible = false;
       const params = this.form;
+      if(params.proType) {
+        params.proType = params.proType === '产品需求' ? 1 : 2
+      }
       if(this.modalTitle == '新增') {
          this.axios.post(services.add, params).then((res) => {// 新增
           this.openFullScreen(false);
@@ -632,6 +669,7 @@ var vm = {
       item.type = "milestone";
       item.edit = `<a style="color:blue; cursor:pointer;">编辑</a>`;
       item.delete = `<a style="color:blue; cursor:pointer;">删除</a>`;
+      item.childNode = `<a style="color:blue; cursor:pointer;">添加子节点</a>`;
       this.tasks.push(item);
     })
     console.log(data, '--data--');
