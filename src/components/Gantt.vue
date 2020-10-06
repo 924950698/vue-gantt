@@ -416,7 +416,6 @@ var vm = {
       this.queryGanntList();
     },
 
-
     handleCurrentChange(val) { //当前页改变时会触发
       console.log(`当前页: ${val}`);
       this.pageNumber.pageCount = val;
@@ -442,8 +441,12 @@ var vm = {
     },
 
     handleToSearch() {
-      const params = { label: this.searchVal };
-      this.axios.post(services.search, params).then((res) => {
+      const params = { 
+        filters: this.searchVal,
+        currentPage: this.pageNumber.pageCount,
+        currentSizes: this.pageNumber.pageSizes,
+      };
+      this.axios.get(services.queryGanttList, { params }).then((res) => {
         this.tasks = [];
         if(res.data.data) {
           const data = res.data.data;
@@ -571,8 +574,9 @@ var vm = {
       const params = { 
         currentPage: this.pageNumber.pageCount,
         currentSizes: this.pageNumber.pageSizes,
+        filters: this.searchVal,
       };
-      this.axios.get(services.queryGanttList,{params} ).then((res) => {
+      this.axios.get(services.queryGanttList, {params} ).then((res) => {
         if (res && res.data) {
           this.openFullScreen(false);
           const data = res.data;
