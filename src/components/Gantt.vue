@@ -441,6 +441,7 @@ var vm = {
     },
 
     handleToSearch() {
+      this.pageNumber.pageCount = 1;
       const params = { 
         filters: this.searchVal,
         currentPage: this.pageNumber.pageCount,
