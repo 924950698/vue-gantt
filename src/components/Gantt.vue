@@ -9,7 +9,7 @@
     <div style="padding-right: 30px">
       <el-input
         placeholder="请输入搜索内容"
-        v-model="input"
+        v-model="searchVal"
         clearable
         style="width: 200px;"
         @input="change"
@@ -217,7 +217,6 @@ var vm = {
         pageSizes: 10,
       },
       loading: true,
-      input: '',
       searchVal:'',
       modalTitle: '新增',
       link,
@@ -320,7 +319,7 @@ var vm = {
             value: "label",
             width: 130,
             expander: true,
-            html: true,
+            html: false,
             // events: {
             //   click({ data, column }) {
             //     alert("description clicked!\n" + data.label);
@@ -498,7 +497,6 @@ var vm = {
               closeOnClickModal:false,
               type: 'warning'
             }).then(() => {
-              this.input = '';
               this.searchVal = '';
               this.queryGanntList();
             })
@@ -539,6 +537,7 @@ var vm = {
     },
 
     handleToEdit(rows) {
+      this.searchVal = '';
       this.modalTitle = '编辑';
       this.form = {
         id: rows.id,
