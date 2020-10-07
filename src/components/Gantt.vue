@@ -4,7 +4,7 @@
 
   <!-- 搜索 -->
    <div style="width: 100%; display: flex;justify-content: space-between; margin: 10px">
-    <el-button type="primary" @click="dialogFormVisible = true, form={}, modalTitle='新增' ">增加需求 Dialog</el-button>
+    <el-button type="primary" @click="dialogFormVisible = true, form={}, modalTitle='新增' ">新建需求</el-button>
 
     <div style="padding-right: 30px">
       <el-input
@@ -258,7 +258,7 @@ var vm = {
             id: -2,
             label: "操作",
             value: "childNode",
-            width: 50,
+            width: 80,
             html: true,
             events: {
               click({ data, column }) {
@@ -440,6 +440,8 @@ var vm = {
   methods: {
 
     handleToCreatChildNode(rows) {
+      this.form={};
+      this.modalTitle="新增子节点";
       this.dialogFormVisible = true;
       this.form.parentId = rows.id;
     },
@@ -496,8 +498,9 @@ var vm = {
               closeOnClickModal:false,
               type: 'warning'
             }).then(() => {
-              this.queryGanntList();
               this.input = '';
+              this.searchVal = '';
+              this.queryGanntList();
             })
           }
         }
@@ -559,23 +562,8 @@ var vm = {
       if(params.proType) {
         params.proType = params.proType === '产品需求' ? 1 : 2
       }
-      if(this.modalTitle == '新增') {
-         this.axios.post(services.add, params).then((res) => {// 新增
-          this.openFullScreen(false);
-          if(res.data) {
-            this.queryGanntList();
-            this.$message({
-              message: '新建成功！',
-              type: 'success'
-            });
-          }
-        })
-        .catch(error => {
-          this.openFullScreen(false);
-          this.$message.error('新建失败！');
-        })
-      } else {
-        this.axios.post(services.update, params).then((res) => {// 编辑
+      if(this.modalTitle === '编辑') {
+          this.axios.post(services.update, params).then((res) => {// 编辑
           this.openFullScreen(false);
           if(res.data) {
             this.$message({
@@ -588,6 +576,21 @@ var vm = {
         .catch(error => {
           this.openFullScreen(false);
           this.$message.error('编辑失败！');
+        })
+      } else {
+        this.axios.post(services.add, params).then((res) => {// 新增
+          this.openFullScreen(false);
+          if(res.data) {
+            this.queryGanntList();
+            this.$message({
+              message: '新建成功！',
+              type: 'success'
+            });
+          }
+        })
+        .catch(error => {
+          this.openFullScreen(false);
+          this.$message.error('新建失败！');
         })
       }
     },
