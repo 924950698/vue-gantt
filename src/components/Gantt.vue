@@ -34,14 +34,14 @@
 
     <!-- 分页 -->
     <div style="display: flex; justify-content: center;margin-top: 10px;">
-      <!-- <el-pagination
+      <el-pagination
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
         :total="pageNumber.total">
-      </el-pagination> -->
+      </el-pagination>
 
-      <el-pagination
+      <!-- <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pageNumber.pageCount"
@@ -49,22 +49,13 @@
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
         :total="pageNumber.total">
-      </el-pagination>
+      </el-pagination> -->
     </div>
     <div class="q-mt-md" />
 
     <!-- 新增、编辑弹窗 -->
     <el-dialog :title="modalTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <!-- <el-form-item label="id" :label-width="formLabelWidth">
-          <el-input
-            v-model="form.id"
-            autocomplete="off"
-            style="width: 300px"
-            maxlength="10"
-            show-word-limit
-          ></el-input>
-        </el-form-item> -->
         <el-form-item label="项目名称" :label-width="formLabelWidth">
           <el-input
             v-model="form.label"
@@ -621,6 +612,14 @@ var vm = {
         if (res && res.data) {
           this.openFullScreen(false);
           const data = res.data;
+          if(data.data.length == 0 && data.total > 0){
+            this.$message({
+              type: 'info',
+              message: `第${this.pageNumber.pageCount}页暂无数据～`
+            }); 
+            this.pageNumber.pageCount = 1;
+            this.queryGanntList();
+          }
           this.tasksHandler(data);
         }
       });
