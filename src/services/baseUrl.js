@@ -14,12 +14,14 @@ const add = myUrl + gannt.created;
 const update = myUrl + gannt.update;
 const destroy = myUrl + gannt.destroy;
 const search = myUrl + gannt.search;
+const login = myUrl + gannt.login;
 
 export default {
-    queryGanttList,
-    deleteGannt,
-    add,
-    update,
-    destroy,
-    search,
+  queryGanttList,
+  deleteGannt,
+  add,
+  update,
+  destroy,
+  search,
+  login,
 }

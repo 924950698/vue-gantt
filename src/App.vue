@@ -14,6 +14,12 @@
         <q-toolbar-title>
           质量效率部项目管理 
         </q-toolbar-title>
+
+        <div class="avatar-content"> 
+          <img class="header-img" src="https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=682895161,2056544872&fm=111&gp=0.jpg" alt="">
+          <div class="user-name" @click="handleToRegister"> lxd </div>
+        </div>
+
       </q-toolbar>
     </q-header>
 
@@ -40,23 +46,53 @@
 
     <q-page-container>
       <router-view />
+      <register />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-// import Gantt from "./components/Gantt.vue";
-
+import register from './components/Register.vue';
 
 export default {
   name: "LayoutDefault",
+  components: { register },
   data() {
     return {
       leftDrawerOpen: false
     };
+  },
+  methods: {
+    
+    handleToRegister() {
+      console.log("eee")
+      // this.$router.push("/register");
+
+    }
+
   }
 };
 </script>
 
 <style>
+
+  .avatar-content {
+    margin: 0 20px;
+    border: 1px solid red;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+  }
+
+  .header-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+
+  .user-name {
+    
+  }
+
 </style>

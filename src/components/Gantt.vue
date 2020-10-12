@@ -34,14 +34,14 @@
 
     <!-- 分页 -->
     <div style="display: flex; justify-content: center;margin-top: 10px;">
-      <el-pagination
+      <!-- <el-pagination
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
         :total="pageNumber.total">
-      </el-pagination>
+      </el-pagination> -->
 
-      <!-- <el-pagination
+      <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pageNumber.pageCount"
@@ -49,7 +49,7 @@
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
         :total="pageNumber.total">
-      </el-pagination> -->
+      </el-pagination>
     </div>
     <div class="q-mt-md" />
 
@@ -146,7 +146,6 @@ import GanttHeader from "gantt-elastic-header";
 import dayjs from "dayjs";
 import services from "../services/baseUrl.js";
 import { getStartDate, rTime } from "../utils/utils.js";
-import { AddGannt } from './AddGannt.vue';
 import qs from 'qs';
 
 // just helper to get current dates  获取当前时间

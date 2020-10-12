@@ -1,17 +1,16 @@
 import Vue from 'vue';
 import axios from 'axios';
-import VueAxios from 'vue-axios';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 import Gantt from './components/Gantt.vue';
 import Board from './components/Board.vue';
+import Register from './components/Register.vue';
 import Router from 'vue-router';
 
 Vue.prototype.axios = axios;
 
 Vue.use(Router);
-// Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 
 
@@ -24,6 +23,10 @@ const router = new Router({
     {
       path: '/board',
       component: Board
+    },
+    {
+      path: '/register',
+      component: Register
     }
   ]
 });
