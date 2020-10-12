@@ -46,7 +46,7 @@
 
     <q-page-container>
       <router-view />
-      <register />
+      <register @token="handleToRegister"/>
     </q-page-container>
   </q-layout>
 </template>
@@ -57,9 +57,11 @@ import register from './components/Register.vue';
 export default {
   name: "LayoutDefault",
   components: { register },
+
   data() {
     return {
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+
     };
   },
   methods: {
@@ -67,7 +69,7 @@ export default {
     handleToRegister() {
       console.log("eee")
       // this.$router.push("/register");
-
+      this.$root.$emit('eventName', 123)
     }
 
   }

@@ -15,7 +15,7 @@
 
         <el-form-item>
         
-          <el-button style="width: 300px" type="primary" :loading="loginState" @click="submitForm('ruleForm')">登录中</el-button>
+          <el-button style="width: 300px" type="primary" :loading="loginState" @click="login()">登录中</el-button>
 
           <!-- <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button> -->
 
@@ -31,10 +31,18 @@
 
   export default {
     name: 'register',
-    props: {
-      dialogFormVisible:{
-        type: Boolean,
-        default: true
+    // props: {
+    //   dialogFormVisible:{
+    //     type: Boolean,
+    //     default: false
+    //   }
+    // },
+
+    mounted() {
+      const token = localStorage.getItem('token');
+      console.log("token==>", token);
+      if(!token) {
+        this.dialogFormVisible = true;
       }
     },
 
@@ -75,6 +83,7 @@
         }
       };
       return {
+        dialogFormVisible: false,
         loginState: false,
         ruleForm: {
           name: '',
@@ -95,7 +104,8 @@
       onSubmit() {
         console.log('submit!');
       },
-      submitForm() {
+
+      login() {
         console.log(this.ruleForm);
         this.loginState = true;
         const params = {
@@ -112,6 +122,8 @@
               });
               this.loginState = false;
               this.dialogFormVisible = false;
+              localStorage.setItem('token', data.data.token);
+              this.$emit('token');
             } else {
               this.$message.error('登录失败！');
               this.loginState = false;

@@ -164,7 +164,6 @@ function getDate(hours) {
   ).getTime();
   return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
 }
-const jiraLink='http://jira.dev.aixuexi.com/browse/';
 const link ='';
 
 let tasks = [];
@@ -210,7 +209,6 @@ var vm = {
       searchVal:'',
       modalTitle: '新增',
       link,
-      jiraLink,
       tasks,
       options: {
       taskMapping: {
@@ -418,12 +416,18 @@ var vm = {
         risk: '', //风险
       },
       value1: '',
+      token: localStorage.getItem('token'),
     };
   },
 
   mounted() {
-    var _this = this
-    this.queryGanntList();
+    const _this= this;
+    this.$root.$on('eventName', () => {
+      _this.queryGanntList();
+    })
+    if(this.token) {
+      _this.queryGanntList();
+    }
   },
 
   methods: {
@@ -607,6 +611,7 @@ var vm = {
         currentSizes: this.pageNumber.pageSizes,
         filters: this.searchVal,
       };
+      this.axios.defaults.headers.token = localStorage.getItem('token');
       this.axios.get(services.queryGanttList, {params} ).then((res) => {
         if (res && res.data) {
           this.openFullScreen(false);
