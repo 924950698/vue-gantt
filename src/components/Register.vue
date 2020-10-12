@@ -4,7 +4,7 @@
     <el-dialog title="登录" width="500px" :visible.sync="dialogFormVisible">
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="用户名" prop="name">
-          <el-input style="width: 300px" type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-input style="width: 300px" v-model="ruleForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="pass">
           <el-input style="width: 300px" type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
@@ -77,6 +77,7 @@
       return {
         loginState: false,
         ruleForm: {
+          name: '',
           pass: '',
           checkPass: '',
         },
@@ -95,25 +96,30 @@
         console.log('submit!');
       },
       submitForm() {
-        // this.dialogFormVisible = false;
+        console.log(this.ruleForm);
         this.loginState = true;
         const params = {
-          username: 'test1',
-          password: '1234',
+          username: this.ruleForm.name,
+          password: this.ruleForm.pass,
         }
-        this.axios.post(services.login, params).then((res) => {// 编辑
-          this.openFullScreen(false);
+        this.axios.post(services.login, params).then((res) => {
           if(res.data) {
-            this.$message({
-              message: '编辑成功！',
-              type: 'success'
-            });
-            this.queryGanntList();
+            const data = res.data;
+            if(data.status === 200) {
+              this.$message({
+                message: '登录成功！',
+                type: 'success'
+              });
+              this.loginState = false;
+              this.dialogFormVisible = false;
+            } else {
+              this.$message.error('登录失败！');
+              this.loginState = false;
+            }
           }
         })
         .catch(error => {
-          this.openFullScreen(false);
-          this.$message.error('编辑失败！');
+          console.log('login接口获取失败' + error.errMsg);
         })
       }
     }
