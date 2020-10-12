@@ -16,9 +16,11 @@
         </q-toolbar-title>
 
         <div class="avatar-content"> 
-          <img class="header-img" src="https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=682895161,2056544872&fm=111&gp=0.jpg" alt="">
-          <div class="user-name" @click="handleToRegister"> lxd </div>
+          <div class="user-name" > <span style="font-size: 15px;">当前用户:</span> {{userName}} </div>
+          <img class="header-img" :src="userImg" alt="">
+          <el-button class="logOut" @click="handleToLoginOut">注销</el-button>
         </div>
+
 
       </q-toolbar>
     </q-header>
@@ -46,31 +48,66 @@
 
     <q-page-container>
       <router-view />
-      <register @token="handleToRegister"/>
+      <register @token="handleToRegister" :dialogFormVisible="dialogFormVisible"/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import register from './components/Register.vue';
+import services from "./services/baseUrl.js";
 
 export default {
   name: "LayoutDefault",
   components: { register },
 
+  mounted() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(user) {
+      this.userName = user.userName;
+      this.userImg = user.userImg;
+    }
+    const token = localStorage.getItem('token');
+    if(!token) {
+      this.dialogFormVisible = true;
+    }
+  },
+
   data() {
     return {
       leftDrawerOpen: false,
-
+      userName: null,
+      userImg: null,
+      dialogFormVisible: false,
     };
   },
+
   methods: {
     
-    handleToRegister() {
-      console.log("eee")
-      // this.$router.push("/register");
-      this.$root.$emit('eventName', 123)
-    }
+    handleToRegister(userObj) {
+      console.log("eee", userObj);
+      this.userName = userObj.userName;
+      this.userImg = userObj.userImg;
+      this.$root.$emit('eventName');
+      this.dialogFormVisible = false;
+    },
+
+    handleToLoginOut() {
+      this.axios.get(services.logout).then((res) => {
+        if(res.data) {
+          const data = res.data;
+          if(data.status === 200) {
+            localStorage.clear();
+            this.dialogFormVisible = true;
+            this.$root.$emit('logout');
+            this.userName = null;
+            this.userImg = null;
+          }
+        } else {
+          console.log('logout接口调用失败！')
+        }
+      })
+    },
 
   }
 };
@@ -80,21 +117,34 @@ export default {
 
   .avatar-content {
     margin: 0 20px;
-    border: 1px solid red;
     display: flex;
-    align-self: center;
+    align-items: center;
     justify-content: center;
+    font-size: 20px;
+    position: relative;
+  }
+
+  .avatar-content:hover .logOut {
+    display: block;
   }
 
   .header-img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    margin-right: 5px;
   }
 
   .user-name {
-    
+    margin-right: 15px;
+  }
+
+  .logOut {
+    display: none;
+    width: 100%;
+    position: absolute;
+    top: 25px;
+    text-align: center;
+    background-color: #fff;
   }
 
 </style>

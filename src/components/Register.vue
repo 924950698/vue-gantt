@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-sm" style="width:100%; height: 100%; display: flex; justify-content: center;">
 
-    <el-dialog title="登录" width="500px" :visible.sync="dialogFormVisible">
+    <el-dialog title="登录" width="500px" :visible.sync="dialogFormVisible" :closeOnClickModal=false :closeOnPressEscape=false :showClose=false>
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="用户名" prop="name">
           <el-input style="width: 300px" v-model="ruleForm.name" autocomplete="off"></el-input>
@@ -15,7 +15,7 @@
 
         <el-form-item>
         
-          <el-button style="width: 300px" type="primary" :loading="loginState" @click="login()">登录中</el-button>
+          <el-button style="width: 300px" type="primary" :loading="loginState" @click="login()">登录</el-button>
 
           <!-- <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button> -->
 
@@ -31,18 +31,10 @@
 
   export default {
     name: 'register',
-    // props: {
-    //   dialogFormVisible:{
-    //     type: Boolean,
-    //     default: false
-    //   }
-    // },
-
-    mounted() {
-      const token = localStorage.getItem('token');
-      console.log("token==>", token);
-      if(!token) {
-        this.dialogFormVisible = true;
+    props: {
+      dialogFormVisible: {
+        type: Boolean,
+        default: false
       }
     },
 
@@ -83,7 +75,6 @@
         }
       };
       return {
-        dialogFormVisible: false,
         loginState: false,
         ruleForm: {
           name: '',
@@ -121,12 +112,18 @@
                 type: 'success'
               });
               this.loginState = false;
-              this.dialogFormVisible = false;
               localStorage.setItem('token', data.data.token);
-              this.$emit('token');
+              const userObj = {
+                userName: data.data.username,
+                userImg: data.data.avatar,
+              }
+              localStorage.setItem('user', JSON.stringify(userObj));
+              this.$emit('token', userObj);
+              this.ruleForm.pass = null;
             } else {
               this.$message.error('登录失败！');
               this.loginState = false;
+              this.ruleForm.pass = null;
             }
           }
         })

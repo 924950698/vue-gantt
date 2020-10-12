@@ -428,6 +428,10 @@ var vm = {
     if(this.token) {
       _this.queryGanntList();
     }
+    this.$root.$on('logout', () => {
+      _this.tasks=[];
+    })
+    
   },
 
   methods: {
@@ -589,20 +593,6 @@ var vm = {
       }
     },
 
-    editHandler() {
-      var count = 11;
-      // setInterval(() => {
-      //   count ++;
-      //   const params = {"id":count,"label":"5","user":"5","start":"2020-10-04 00-00-00","endDate":"2020-10-05 00-00-00","proType":"5","percent":"5","risk":"5"}
-      //   this.axios.post(services.add, params).then((res) => {
-      //       console.log('编辑==》', res);
-      //       if(res.data) {
-      //         this.queryGanntList();
-      //       }
-      //     })
-      // }, 1000);
-    },
-
     queryGanntList() {
       this.openFullScreen(true);
       this.tasks= [];
@@ -612,6 +602,7 @@ var vm = {
         filters: this.searchVal,
       };
       this.axios.defaults.headers.token = localStorage.getItem('token');
+      // this.axios.defaults.headers.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QzIiwiaWF0IjoxNjAyNDk4Mzg3fQ.fDA1abkg-gasR5pPbLDwodsDIkcdLdbUXsMzJKd4AtI1';
       this.axios.get(services.queryGanttList, {params} ).then((res) => {
         if (res && res.data) {
           this.openFullScreen(false);

@@ -6,6 +6,7 @@ const gannt = {
   destroy: "gannt/destroy", //删除
   search: "gannt/search", //查询
   login: "api/user/login", //登录
+  logout: "api/user/logout", //退出
 }
 
 export { gannt };
