@@ -9,6 +9,7 @@ import Register from './components/Register.vue';
 import Router from 'vue-router';
 
 Vue.prototype.axios = axios;
+axios.defaults.withCredentials = true;
 
 Vue.use(Router);
 Vue.use(ElementUI);
