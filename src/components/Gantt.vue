@@ -14,7 +14,7 @@
         style="width: 200px;"
         @input="change"
         @clear="clear"
-        >
+      >
       </el-input>
       <el-button type="primary" icon="el-icon-search" @click="handleToSearch">搜索</el-button>
     </div>

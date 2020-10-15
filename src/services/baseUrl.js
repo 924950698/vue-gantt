@@ -4,9 +4,9 @@ import { gannt } from "../constant/network";
 
 // const queryGanttList = myUrl + "allJiraProjects";
 
-// const myUrl = 'http://192.168.7.50:7001/';
+const myUrl = 'http://192.168.7.50:7001/';
 
-const myUrl = 'http://192.168.0.103:7001/';
+// const myUrl = 'http://192.168.0.103:7001/';
 
 const queryGanttList = myUrl + gannt.getLists; 
 const deleteGannt = myUrl + gannt.delete;

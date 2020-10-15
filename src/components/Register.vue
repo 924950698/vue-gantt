@@ -1,7 +1,9 @@
 <template>
   <q-page class="q-pa-sm" style="width:100%; height: 100%; display: flex; justify-content: center;">
 
-    <el-dialog title="登录" width="500px" :visible.sync="dialogFormVisible" :closeOnClickModal=false :closeOnPressEscape=false :showClose=false>
+<!-- :showClose=false -->
+
+    <el-dialog title="登录" width="500px" :visible.sync="dialogFormVisible" :closeOnClickModal=false :closeOnPressEscape=false >
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="用户名" prop="name">
           <el-input style="width: 300px" v-model="ruleForm.name" autocomplete="off"></el-input>
