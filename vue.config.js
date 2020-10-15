@@ -1,7 +1,6 @@
 const axios = require('axios');
 
 axios.defaults.baseURL = '/api'
-console.log('123')
 
 module.exports = {
   pluginOptions: {
