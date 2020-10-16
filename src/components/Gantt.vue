@@ -422,12 +422,17 @@ var vm = {
 
   mounted() {
     const _this= this;
+    
     this.$root.$on('eventName', () => {
       _this.queryGanntList();
     })
-    if(this.token) {
-      _this.queryGanntList();
-    }
+
+    // if(this.token) {
+    //   _this.queryGanntList();
+    // }
+
+     _this.queryGanntList();
+
     this.$root.$on('logout', () => {
       _this.tasks=[];
     })
@@ -601,21 +606,29 @@ var vm = {
         currentSizes: this.pageNumber.pageSizes,
         filters: this.searchVal,
       };
-      this.axios.defaults.headers.token = localStorage.getItem('token');
+      if(localStorage.getItem('token')) {
+        this.axios.defaults.headers.token = localStorage.getItem('token');
+      }
       // this.axios.defaults.headers.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QzIiwiaWF0IjoxNjAyNDk4Mzg3fQ.fDA1abkg-gasR5pPbLDwodsDIkcdLdbUXsMzJKd4AtI1';
       this.axios.get(services.queryGanttList, {params} ).then((res) => {
-        if (res && res.data) {
-          this.openFullScreen(false);
-          const data = res.data;
-          if(data.data.length == 0 && data.total > 0){
-            this.$message({
-              type: 'info',
-              message: `第${this.pageNumber.pageCount}页暂无数据～`
-            }); 
-            this.pageNumber.pageCount = 1;
-            this.queryGanntList();
-          }
-          this.tasksHandler(data);
+        if (res) {
+            this.openFullScreen(false);
+            const data = res.data;
+            if(data.data.length == 0 && data.total > 0){
+              this.$message({
+                type: 'info',
+                message: `第${this.pageNumber.pageCount}页暂无数据～`
+              }); 
+              this.pageNumber.pageCount = 1;
+              this.queryGanntList();
+            } 
+            if(data.status == 1001) {
+              return this.$message({
+                type: 'error',
+                message: `用户未登录，请先登录！`
+              }); 
+            }
+            this.tasksHandler(data);
         }
       });
     },
