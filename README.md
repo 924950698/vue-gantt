@@ -1,29 +1,3 @@
-# vue-gantt-elastic
+1. 前端打包命令
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+在项目根目录下执行：scp -rp ./nginx root@47.108.160.159:/root
